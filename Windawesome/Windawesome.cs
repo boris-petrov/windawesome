@@ -771,6 +771,41 @@ namespace Windawesome
 			}
 		}
 
+		//public void SwapWorkspace(int workspaceIdToSwapWith = 0)
+		//{
+		//    if (workspaceIdToSwapWith == 0 || config.Workspaces[workspaceIdToSwapWith - 1].IsCurrentWorkspace)
+		//    {
+		//        return ;
+		//    }
+
+		//    var workspace = config.Workspaces[workspaceIdToSwapWith - 1];
+
+		//    if (workspace.IsWorkspaceVisible)
+		//    {
+		//        SwapWorkspacesMonitors(workspace, CurrentWorkspace);
+		//    }
+		//    else if (workspace.Monitor != CurrentWorkspace.Monitor)
+		//    {
+		//        MoveWorkspaceToMonitor(workspace, CurrentWorkspace.Monitor);
+		//    }
+		//    else
+		//    {
+		//        SwitchToWorkspace(workspaceIdToSwapWith);
+		//    }
+		//}
+
+		public void SwitchToNextMonitor()
+		{
+			var nextMonitorIndex = (CurrentWorkspace.Monitor.monitorIndex + 1) % monitors.Length;
+			SwitchToWorkspace(monitors[nextMonitorIndex].CurrentVisibleWorkspace.id);
+		}
+
+		public void SwitchToPreviousMonitor()
+		{
+			var previousMonitorIndex = (CurrentWorkspace.Monitor.monitorIndex + monitors.Length - 1) % monitors.Length;
+			SwitchToWorkspace(monitors[previousMonitorIndex].CurrentVisibleWorkspace.id);
+		}
+
 		public void SwitchToWorkspace(int workspaceId, bool setForeground = true)
 		{
 			var newWorkspace = workspaceId == 0 ? CurrentWorkspace : config.Workspaces[workspaceId - 1];
@@ -848,7 +883,8 @@ namespace Windawesome
 			}
 		}
 
-		public void MoveWorkspaceToMonitor(Workspace workspace, Monitor newMonitor, bool showOnNewMonitor = true, bool switchTo = true)
+		public void MoveWorkspaceToMonitor(Workspace workspace, Monitor newMonitor, bool showOnNewMonitor = true,
+			bool switchTo = true)
 		{
 			var oldMonitor = workspace.Monitor;
 			if (oldMonitor != newMonitor && oldMonitor.Workspaces.Count() > 1)
