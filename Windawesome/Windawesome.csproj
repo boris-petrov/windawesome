@@ -125,6 +125,7 @@
     <Compile Include="HashMultiSet.cs" />
     <Compile Include="IBar.cs" />
     <Compile Include="ILayout.cs" />
+    <Compile Include="InputLanguageChangerPlugin.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="IWidget.cs" />
     <Compile Include="LanguageBarWidget.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="LayoutWidget.cs" />
     <Compile Include="LoggerPlugin.cs" />
     <Compile Include="Monitor.cs" />
+    <Compile Include="RamMonitorWidget.cs" />
     <Compile Include="SystemAndProcessInformation.cs" />
     <Compile Include="SystemSettingsChanger.cs" />
     <Compile Include="SystemTrayWidget.cs" />

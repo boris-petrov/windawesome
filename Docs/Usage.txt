@@ -182,7 +182,9 @@ DateTime Widget - accepts a string to format the DateTime object, as well as bac
 
 Application Tabs Widget - accepts a boolean indicating whether to show a single tab for the foreground application only (false by default), or to show all windows. 4 arguments for colors too with nice defaults
 
-CpuMonitorWidget - accepts the time in milliseconds to wait before updating the value (should be at least 500, 1000 by default), a prefix and a suffix to display ("CPU:" and "%" respectively by default) and background and foreground colors (white and black)
+CpuMonitorWidget - shows the current total CPU utilization. Accepts the time in milliseconds to wait before updating the value (should be at least 500, 1000 by default), a prefix and a suffix to display ("CPU:" and "%" respectively by default) and background and foreground colors (white and black)
+
+RamMonitorWidget - (implemented by vOSHoHpC) - displays the "% Committed Bytes In Use" - you can Google it to see what this exactly is. Accepts the time in milliseconds to wait before updating the value (should be at least 500, 1000 by default), a prefix and a suffix to display ("RAM:" and "%" respectively by default) and background and foreground colors (white and black)
 
 LaptopBatteryMonitorWidget - accepts the text to show when the battery is charging ("C" by default), when it is not charging ("B"), the time in milliseconds to wait before updating the value (60000 by default), a prefix and a suffix to display (" " and "%" respectively by default) and background and foreground colors (white and black)
 
@@ -197,22 +199,37 @@ LoggerPlugin - a plugin which logs in a file what windows are created/destroyed/
 
 ShortcutsManager - allows you to use keyboard shortcuts. If you use only non-left or right modifier keys (Control, Alt, etc), it uses RegisterHotKey function which will fail if there is already a global shortcut with this key and these modifiers. If, however, you have one or more shortcuts that have a left or right-only modifier (LControl, RAlt, etc), then it registers a low-level keyboard hook which will work fine with colliding mappings. In that case, if you return true from your handler the previous mapping will not be executed. If you return false, it will be. I do suggest, however, that you use only non-left/right shortcuts (Control, Shift, etc) and use non-colliding mappings, as this is going to be MUCH faster
 
+InputLanguageChangerPlugin - you give it some window class names and for windows with one of them the plugin will save the window's input language when you change from it and restore the input language when you switch to it. Extremely useful if you use a chat program, e.g., and you want to type in different languages to different people.
+
 ====================================================================
 
 Usage tips:
+- Windawesome is mainly targeted at programmers. Customization is done by writing code. Extension is done by writing code. Anyone who is not a programmer will have a very hard time figuring out how to use this.
+
+- The best way to customize window rules is via the so called "window class name". If you would like an in-depth explanation, please refer to MSDN, but in short - this is a unique string that is for a particular type of a window. I would suggest you use a program like WinSpy:
+http://catch22.net/software/winspy
+In order to find these. It is easiest to filter a particular window via its class name. Take a look at the default config files for examples.
+
+- Most of the customization that is available for Widgets/Plugins is done in the constructors of the corresponding thing. In order to see what is available, please look at the code itself - search for the constructors and see the parameters it accepts (most have default values and that's why you don't have to give all of them). For the functionality provided by Windawesome itself, you could take a look at the class Windawesome - all the public functions there are available for your use.
+
 - Windawesome will change the so called "working area" of Windows to take the maximum available space - this means, for example, that if the Windows Taskbar is not shown when you maximize a window, it will take the area of the Taskbar too. Whenever changing between workspaces, Windawesome will set the new workspace's working area according to its settings (how many bars are shown, where they are located, whether the Taskbar is shown). This is very useful, however changing the working area in Windows takes, for some reason, a *very* long time - like half a second - which is *very* annoying. This means that having two or more workspaces with different settings for bar heights and Taskbar visibility will lead to constant changing of the working area when you switch between them. I would suggest that you have some bars (not necessarily the same) for each workspace, but with the same height, and hiding or showing the Windows Taskbar on all of them. This will make switching between workspaces instantaneous. Take a look at my configuration to see what I mean.
+
 - I highly suggest you run Windawesome elevated (in Vista and above) as otherwise it's not going to be able to manage elevated windows, due to the UIPI changes since Vista. Which is very irritating, trust me. One more thing is that Windawesome (if not running elevated) will not be able to switch to the topmost window when changing workspaces if on the previous the active program was an elevated one. If you would like to run Windawesome, or any program, elevated without the UIC prompt, you can read how to do that here:
 http://maximumpcguides.com/windows-vista/run-a-program-with-administrative-privileges-without-uac-prompts/
+
 - If you are using Alt + number to switch between workspaces, I HIGHLY recommend using these two lines in an AutoHotkey script:
 ~LAlt Up::return
 ~RAlt Up::return
 This will remove the Windows standard behaviour of the Alt key which focuses keyboard input on the menu of the current application. This is VERY useful because sometimes when switching workspaces the focus is on the menu of the newly shown application and not on the app itself.
+
 - I haven't included an Application Launcher in Windawesome (like dmenu for example in Linux WMs) because there are already plenty available for Windows. My personal favourite (only because it is vastly customizable) after trying many others is Find and Run Robot.
+
 - If there is a window that is owned by another which is managed by Windawesome, then the owned one is handled specially (it is hidden whenever the managed owner is hidden, etc). This might be a problem with TApplication windows as they have an (almost) invisible owner and the "real" application windows are owned by it. If you handle the owner (as are my own rules) - the owned windows won't be managed by the layout, e.g., which might be a problem for some. If you would like them to be, you should make rules for each one of them separatelly.
 
 ====================================================================
 
 Known bugs/limitations:
+- Do not attach or detach a monitor while Windawesome is running. This won't end good. Stop it and then restart it after you have connected/disconnected the monitor (and fixed your config files).
 - Whenever a label's text is longer than the width, ellipsis show. However, then the text alignment changes to Top or something. This is a bug in the .NET Framework since version 2.0 and hasn't been fixed even in 4.0.
 - There is a minor chance that the System Tray Widget is not going to work properly in some case. Let me know if that happens with the exact scenario.
 - Do not dock an application that is managed - when you change the workspace Windawesome will hide it but the working area will not reset. If you want to dock a window - make sure it is not managed.
