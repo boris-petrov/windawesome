@@ -321,6 +321,7 @@ namespace Windawesome
 			}
 		}
 
+		// TODO: implement those two:
 		//internal bool HideBar(int workspacesCount, IEnumerable<Workspace> workspaces, IBar hideBar)
 		//{
 		//    shownBars = shownBars.ToArray(); // because we need to hide the bar after that so we need to save the currently shown ones
