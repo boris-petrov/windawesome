@@ -18,6 +18,8 @@ namespace Windawesome
 
 		public static IntPtr HandleStatic { get; private set; }
 
+		private bool justDeactivatedWindow;
+
 		private readonly Dictionary<IntPtr, LinkedList<Tuple<Workspace, Window>>> applications; // hWnd to a list of workspaces and windows
 		private readonly WindowBase[] topmostWindows;
 		private readonly HashMultiSet<IntPtr> hiddenApplications;
@@ -440,7 +442,8 @@ namespace Windawesome
 						if (NativeMethods.AttachThreadInput(this.windawesomeThreadId, foregroundWindowThreadId, true))
 						{
 							var targetWindowThreadId = NativeMethods.GetWindowThreadProcessId(hWnd, IntPtr.Zero);
-							var successfullyAttached = NativeMethods.AttachThreadInput(foregroundWindowThreadId, targetWindowThreadId, true);
+							var successfullyAttached = foregroundWindowThreadId != targetWindowThreadId &&
+								NativeMethods.AttachThreadInput(foregroundWindowThreadId, targetWindowThreadId, true);
 
 							TrySetForegroundWindow(hWnd);
 
@@ -552,17 +555,15 @@ namespace Windawesome
 				Utilities.RestoreApplication(window.hWnd);
 				System.Threading.Thread.Sleep(NativeMethods.minimizeRestoreDelay);
 			}
-			else
-			{
-				ForceForegroundWindow(window);
-			}
+
+			ForceForegroundWindow(window);
 			CurrentWorkspace.WindowActivated(window.hWnd);
 		}
 
 		private IntPtr DoForTopmostWindowForWorkspace(Workspace workspace, Action<WindowBase> action)
 		{
 			var window = topmostWindows[workspace.id - 1];
-			if (window == null || !NativeMethods.IsWindowVisible(window.hWnd) || NativeMethods.IsIconic(window.hWnd))
+			if (window == null || !NativeMethods.IsWindowVisible(window.hWnd) || NativeMethods.IsIconic(window.hWnd) || workspace.GetWindow(window.hWnd) == null)
 			{
 				NativeMethods.EnumWindows((hWnd, _) =>
 					{
@@ -625,13 +626,20 @@ namespace Windawesome
 
 		private void WaitAndActivateNextTopmost(IntPtr hWnd)
 		{
-			if (topmostWindows[CurrentWorkspace.id - 1].hWnd == hWnd)
+			if (monitors.Length == 1 || monitors.All(m => m.CurrentVisibleWorkspace.IsCurrentWorkspace || m.CurrentVisibleWorkspace.GetWindowsCount() == 0))
 			{
-				while (NativeMethods.GetForegroundWindow() == hWnd)
+				if (topmostWindows[CurrentWorkspace.id - 1].hWnd == hWnd)
 				{
-					System.Threading.Thread.Sleep(20);
+					while (NativeMethods.GetForegroundWindow() == hWnd)
+					{
+						System.Threading.Thread.Sleep(20);
+					}
+					DoForTopmostWindowForWorkspace(CurrentWorkspace, ActivateWindow);
 				}
-				DoForTopmostWindowForWorkspace(CurrentWorkspace, ActivateWindow);
+			}
+			else
+			{
+				justDeactivatedWindow = true;
 			}
 		}
 
@@ -1099,7 +1107,8 @@ namespace Windawesome
 
 						// this, however, is not good for unmanaged windows, which won't be activated because of
 						// AddWindowToWorkspace and their activation won't be noted when created
-						if (NativeMethods.IsWindowVisible(hWnd) && !hiddenApplications.Contains(hWnd))
+						if (topmostWindows[CurrentWorkspace.id - 1].hWnd != hWnd &&
+							NativeMethods.IsWindowVisible(hWnd) && !hiddenApplications.Contains(hWnd))
 						{
 							if (hWnd != NativeMethods.shellWindow)
 							{
@@ -1137,7 +1146,17 @@ namespace Windawesome
 					// the window is actually visible on another monitor
 					// (e.g. when the user has ALT-TABbed to the window across monitors)
 
-					SwitchToWorkspace(workspace.id, false);
+					if (justDeactivatedWindow)
+					{
+						// Windows is trying to activate a window from another workspace when some on the current one was
+						// destroyed or minimized. Do not allow that but instead reactivate another one from the current workspace
+						justDeactivatedWindow = false;
+						activatedWindow = DoForTopmostWindowForWorkspace(CurrentWorkspace, ActivateWindow);
+					}
+					else
+					{
+						SwitchToWorkspace(workspace.id, false);
+					}
 				}
 				else
 				{

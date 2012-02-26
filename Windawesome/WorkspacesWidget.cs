@@ -216,7 +216,7 @@ namespace Windawesome
 			for (var i = 0; i < windawesome.config.Workspaces.Length; i++)
 			{
 				var workspace = windawesome.config.Workspaces[i];
-				var name = (i + 1) + (workspace.name == "" ? "" : ":" + workspace.name);
+				var name = workspace.name ?? (i + 1).ToString();
 
 				var label = bar.CreateLabel(" " + name + " ", 0);
 				label.TextAlign = ContentAlignment.MiddleCenter;

@@ -937,6 +937,8 @@ using LCID = UInt32; // DWORD
 		public const uint LOCALE_SISO639LANGNAME = 0x00000059;
 		public const uint LOCALE_SISO3166CTRYNAME = 0x0000005A;
 
+		public const uint WM_INPUTLANGCHANGEREQUEST = 0x0050;
+
 		#endregion
 
 		// process and thread stuff

@@ -17,18 +17,18 @@ namespace Windawesome
 				NativeMethods.GetMonitorInfo(hWindowsMonitor, ref windowsMonitorInfo);
 				var windowsMonitorBounds = windowsMonitorInfo.rcMonitor.ToRectangle();
 
+				var winPlacement = NativeMethods.WINDOWPLACEMENT.Default;
+				NativeMethods.GetWindowPlacement(window.hWnd, ref winPlacement);
+
+				winPlacement.MaxPosition.X = newMonitorBounds.Left;
+				winPlacement.MaxPosition.Y = newMonitorBounds.Top;
+
 				if (NativeMethods.IsZoomed(window.hWnd) && windowsMonitorBounds != newMonitorBounds)
 				{
 					// restore if program is maximized and should be on a different monitor
 					NativeMethods.ShowWindow(window.hWnd, NativeMethods.SW.SW_SHOWNOACTIVATE); // should not use SW_RESTORE as it activates the window
 					System.Threading.Thread.Sleep(NativeMethods.minimizeRestoreDelay);
 				}
-
-				var winPlacement = NativeMethods.WINDOWPLACEMENT.Default;
-				NativeMethods.GetWindowPlacement(window.hWnd, ref winPlacement);
-
-				winPlacement.MaxPosition.X = newMonitorBounds.Left;
-				winPlacement.MaxPosition.Y = newMonitorBounds.Top;
 
 				var ws = NativeMethods.GetWindowStyleLongPtr(window.hWnd);
 				if (ws.HasFlag(NativeMethods.WS.WS_CAPTION | NativeMethods.WS.WS_MAXIMIZEBOX))

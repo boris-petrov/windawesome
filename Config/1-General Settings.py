@@ -1,8 +1,8 @@
 from System.Drawing import Color
 from System.Linq import Enumerable
 from Windawesome import ILayout, TileLayout, FullScreenLayout, FloatingLayout, IPlugin, Workspace
-from Windawesome import Bar, LayoutWidget, WorkspacesWidget, ApplicationTabsWidget, SystemTrayWidget, CpuMonitorWidget, LaptopBatteryMonitorWidget, LanguageBarWidget
-from Windawesome import LoggerPlugin, ShortcutsManager
+from Windawesome import Bar, LayoutWidget, WorkspacesWidget, ApplicationTabsWidget, SystemTrayWidget, CpuMonitorWidget, RamMonitorWidget, LaptopBatteryMonitorWidget, LanguageBarWidget
+from Windawesome import LoggerPlugin, ShortcutsManager, InputLanguageChangerPlugin
 from Windawesome.NativeMethods import MOD
 from System import Tuple
 from System.Windows.Forms import Keys
@@ -52,5 +52,6 @@ config.StartingWorkspaces = [config.Workspaces[0]]
 config.Plugins = [
 	#LoggerPlugin(logWorkspaceSwitching = True, logWindowMinimization = True, logWindowRestoration = True,
 	#	logActivation = True),
-	ShortcutsManager()
+	ShortcutsManager(),
+	InputLanguageChangerPlugin(["icoicq", "icoSKYPE", "icoGOOGLE", "icoChannel", "icoJabber"])
 ]

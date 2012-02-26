@@ -70,7 +70,7 @@ end
 
 # start Firefox
 subscribe modifiers.Alt, key.F do
-	windawesome.run_or_show_application "^MozillaWindowClass$", "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"
+	windawesome.run_or_show_application "^MozillaWindowClass$", "C:\\Program Files (x86)\\Pale Moon\\palemoon.exe"
 end
 
 # start Explorer
