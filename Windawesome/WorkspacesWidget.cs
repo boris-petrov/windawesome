@@ -29,17 +29,17 @@ namespace Windawesome
 		private delegate void WorkFlashingStopped(Workspace workspace);
 		private static event WorkFlashingStopped OnWorkspaceFlashingStopped;
 
-		public WorkspacesWidget(Color[] normalForegroundColor = null, Color[] normalBackgroundColor = null,
+		public WorkspacesWidget(IEnumerable<Color> normalForegroundColor = null, IEnumerable<Color> normalBackgroundColor = null,
 			Color? highlightedForegroundColor = null, Color? highlightedBackgroundColor = null,
 			Color? highlightedInactiveForegroundColor = null, Color? highlightedInactiveBackgroundColor = null,
 			Color? flashingForegroundColor = null, Color? flashingBackgroundColor = null, bool flashWorkspaces = true)
 		{
-			this.normalForegroundColor = normalForegroundColor ?? new[]
+			this.normalForegroundColor = normalForegroundColor != null ? normalForegroundColor.ToArray() : new[]
 				{
 					Color.Black, Color.Black, Color.Black, Color.Black, Color.Black,
 					Color.White, Color.White, Color.White, Color.White, Color.White
 				};
-			this.normalBackgroundColor = normalBackgroundColor ?? new[]
+			this.normalBackgroundColor = normalBackgroundColor != null ? normalBackgroundColor.ToArray() : new[]
 				{
 					Color.FromArgb(0xF0, 0xF0, 0xF0),
 					Color.FromArgb(0xD8, 0xD8, 0xD8),

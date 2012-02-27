@@ -6,11 +6,13 @@ class DateTimeWidget
 	include System::Windows::Forms
 	include System::Linq
 
-	def initialize string, back_color = nil, fore_color = nil, update_time = 30000, click = nil
+	def initialize string, prefix = " ", suffix = " ", back_color = nil, fore_color = nil, update_time = 30000, click = nil
 		@background_color = back_color || Color.from_argb(0xC0, 0xC0, 0xC0)
 		@foreground_color = fore_color || Color.black
 		@string = string
 		@click = click
+		@prefix = prefix
+		@suffix = suffix
 
 		@update_timer = Timer.new
 		@update_timer.interval = update_time
@@ -18,7 +20,7 @@ class DateTimeWidget
 			old_left = @label.left
 			old_right = @label.right
 			old_width = @label.width
-			@label.text = " " + DateTime.now.to_string(@string) + " "
+			@label.text = @prefix + DateTime.now.to_string(@string) + @suffix
 			@label.width = TextRenderer.measure_text(@label.text, @label.font).width
 			if old_width != @label.width
 				self.reposition_controls old_left, old_right
@@ -32,7 +34,7 @@ class DateTimeWidget
 	def initialize_widget bar
 		@bar = bar
 
-		@label = bar.create_label " " + DateTime.now.to_string(@string) + " ", 0
+		@label = bar.create_label @prefix + DateTime.now.to_string(@string) + @suffix, 0
 
 		@label.text_align = ContentAlignment.middle_center
 		@label.back_color = @background_color

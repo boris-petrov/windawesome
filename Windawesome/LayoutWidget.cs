@@ -14,10 +14,10 @@ namespace Windawesome
 		private Bar bar;
 		private bool isLeft;
 
-		public LayoutWidget(Color? backColor = null, Color? foreColor = null, Action onClick = null)
+		public LayoutWidget(Color? backgroundColor = null, Color? foregroundColor = null, Action onClick = null)
 		{
-			backgroundColor = backColor ?? Color.FromArgb(0x99, 0xB4, 0xD1);
-			foregroundColor = foreColor ?? Color.Black;
+			this.backgroundColor = backgroundColor ?? Color.FromArgb(0x99, 0xB4, 0xD1);
+			this.foregroundColor = foregroundColor ?? Color.Black;
 
 			this.onClick = onClick;
 		}
