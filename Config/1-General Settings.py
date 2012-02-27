@@ -1,7 +1,7 @@
-from System.Drawing import Color
+from System.Drawing import Color, Font
 from System.Linq import Enumerable
 from Windawesome import ILayout, TileLayout, FullScreenLayout, FloatingLayout, IPlugin, Workspace
-from Windawesome import Bar, LayoutWidget, WorkspacesWidget, ApplicationTabsWidget, SystemTrayWidget, CpuMonitorWidget, RamMonitorWidget, LaptopBatteryMonitorWidget, LanguageBarWidget
+from Windawesome import Bar, LayoutWidget, WorkspacesWidget, ApplicationTabsWidget, SystemTrayWidget, CpuMonitorWidget, RamMonitorWidget, LaptopBatteryMonitorWidget, LanguageBarWidget, SeparatorWidget
 from Windawesome import LoggerPlugin, ShortcutsManager, InputLanguageChangerPlugin
 from Windawesome.NativeMethods import MOD
 from System import Tuple
@@ -20,20 +20,108 @@ config.WindowPaddedBorderWidth = 0
 
 config.CheckForUpdates = False
 
+workspacesWidgetForegroundColors = [Color.Yellow for i in range(0, 10)]
+workspacesWidgetForegroundColors[0] = Color.LightSeaGreen
+workspacesWidgetBackgroundColors = [Color.Black for i in range(0, 10)]
+
 config.Bars = Enumerable.ToArray[Bar]([
 	Bar(windawesome.monitors[0],
-		[WorkspacesWidget(), LayoutWidget(onClick = onLayoutLabelClick)],
-		[SystemTrayWidget(), LanguageBarWidget(Color.FromArgb(0x99, 0xB4, 0xD1)),
-			DateTimeWidget("ddd, d-MMM"), DateTimeWidget("h:mm tt", Color.FromArgb(0xA8, 0xA8, 0xA8))],
-		[ApplicationTabsWidget()]
+		[
+			WorkspacesWidget(
+				normalForegroundColor = workspacesWidgetForegroundColors,
+				normalBackgroundColor = workspacesWidgetBackgroundColors,
+				highlightedForegroundColor = Color.DarkOrange,
+				highlightedBackgroundColor = Color.Black,
+				highlightedInactiveForegroundColor = Color.LightSeaGreen,
+				highlightedInactiveBackgroundColor = Color.Black,
+				flashingForegroundColor = Color.Black
+			),
+			LayoutWidget(
+				foregroundColor = Color.Gold,
+				backgroundColor = Color.Black,
+				onClick = onLayoutLabelClick
+			)
+		],
+
+		[
+			SystemTrayWidget(),
+			LanguageBarWidget(
+				foregroundColor = Color.Gold,
+				backgroundColor = Color.Black
+			),
+			SeparatorWidget(
+				foregroundColor = Color.Gold,
+				backgroundColor = Color.Black
+			),
+			DateTimeWidget("ddd, d-MMM", "", "", Color.Black, Color.Gold),
+			SeparatorWidget(
+				foregroundColor = Color.Gold,
+				backgroundColor = Color.Black
+			),
+			DateTimeWidget("h:mm tt", "", "", Color.Black, Color.Gold),
+		],
+
+		[
+			ApplicationTabsWidget(
+				normalForegroundColor = Color.LightSeaGreen,
+				normalBackgroundColor = Color.Black,
+				highlightedForegroundColor = Color.DarkOrange,
+				highlightedBackgroundColor = Color.Black,
+			)
+		],
+
+		backgroundColor = Color.Black,
+		font = Font("Consolas", 11)
 	),
 	Bar(windawesome.monitors[0],
-		[WorkspacesWidget(), LayoutWidget(onClick = onLayoutLabelClick)],
-		[SystemTrayWidget(True), LanguageBarWidget(Color.FromArgb(0x99, 0xB4, 0xD1)),
-			DateTimeWidget("ddd, d-MMM"), DateTimeWidget("h:mm tt", Color.FromArgb(0xA8, 0xA8, 0xA8))],
-		[ApplicationTabsWidget()]
+		[
+			WorkspacesWidget(
+				normalForegroundColor = workspacesWidgetForegroundColors,
+				normalBackgroundColor = workspacesWidgetBackgroundColors,
+				highlightedForegroundColor = Color.DarkOrange,
+				highlightedBackgroundColor = Color.Black,
+				highlightedInactiveForegroundColor = Color.LightSeaGreen,
+				highlightedInactiveBackgroundColor = Color.Black,
+				flashingForegroundColor = Color.Black
+			),
+			LayoutWidget(
+				foregroundColor = Color.Gold,
+				backgroundColor = Color.Black,
+				onClick = onLayoutLabelClick
+			)
+		],
+
+		[
+			SystemTrayWidget(True),
+			LanguageBarWidget(
+				foregroundColor = Color.Gold,
+				backgroundColor = Color.Black
+			),
+			SeparatorWidget(
+				foregroundColor = Color.Gold,
+				backgroundColor = Color.Black
+			),
+			DateTimeWidget("ddd, d-MMM", "", "", Color.Black, Color.Gold),
+			SeparatorWidget(
+				foregroundColor = Color.Gold,
+				backgroundColor = Color.Black
+			),
+			DateTimeWidget("h:mm tt", "", "", Color.Black, Color.Gold),
+		],
+
+		[
+			ApplicationTabsWidget(
+				normalForegroundColor = Color.LightSeaGreen,
+				normalBackgroundColor = Color.Black,
+				highlightedForegroundColor = Color.DarkOrange,
+				highlightedBackgroundColor = Color.Black,
+			)
+		],
+
+		backgroundColor = Color.Black,
+		font = Font("Consolas", 11)
 	)
- ])
+])
 
 config.Workspaces = Enumerable.ToArray[Workspace]([
 	Workspace(windawesome.monitors[0], FloatingLayout(), [config.Bars[1]], name = 'main'),
