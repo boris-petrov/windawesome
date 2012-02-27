@@ -134,6 +134,7 @@
     <Compile Include="LoggerPlugin.cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="RamMonitorWidget.cs" />
+    <Compile Include="SeparatorWidget.cs" />
     <Compile Include="SystemAndProcessInformation.cs" />
     <Compile Include="SystemSettingsChanger.cs" />
     <Compile Include="SystemTrayWidget.cs" />
