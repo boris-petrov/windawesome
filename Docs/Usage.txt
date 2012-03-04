@@ -125,7 +125,7 @@ monitor - the Monitor that the Workspace initially belongs to
 layout - the Layout to be used to position windows (make sure to use a new instance for each workspace and a new one when you change it for a particular workspace)
 barsAtTop - a list of IBar objects to be visible at the top of this workspace (IBars can be shared between Workspaces on the same monitor, i.e. two or more workspaces could have the same instance of an IBar. This is actually strongly advised if possible). This list may contain bars from different monitors - when the Workspace is on a specific Monitor only the bars that are for that particular Monitor will be visible. Defaults to null (which means no bars)
 barsAtBottom - same as barsAtTop, except the bars are at the bottom of the screen
-name - a short, descriptive name that is going to be shown next to the workspace ID in the Workspaces Widget. Defaults to ""
+name - a short, descriptive name that is going to be shown in the Workspaces Widget. Defaults to "" and in that case the widget is going to show a number
 showWindowsTaskbar - a boolean to indicate whether to show the Windows taskbar initially on this workspace. Only works for workspaces on the primary monitor which contains the Taskbar. Defaults to false
 repositionOnSwitchedTo - a boolean indicating whether to reposition all windows when this workspace has been switched to. Defaults to false
 
@@ -166,8 +166,8 @@ AddToMasterAreaFactor - a double to add to the master area factor. Can be negati
 IWidgets:
 Things you put on a Bar to display various info.
 Workspaces Widget:
-normalForegroundColor - an array of ten Colors. Whenever the workspace is not selected and it contains N windows, normalForegroundColor[N] is going to be used as a foreground color. Has some nice defaults
-normalBackgroundColor - an array of ten Colors. Whenever the workspace is not selected and it contains N windows, normalBackgroundColor[N] is going to be used as a background color. Has some nice defaults
+normalForegroundColor - an enumerable of ten Colors. Whenever the workspace is not selected and it contains N windows, normalForegroundColor[N] is going to be used as a foreground color. Has some nice defaults
+normalBackgroundColor - an enumerable of ten Colors. Whenever the workspace is not selected and it contains N windows, normalBackgroundColor[N] is going to be used as a background color. Has some nice defaults
 highlightedForegroundColor - the Color to be used when the workspace is the current one. Defaults to White
 highlightedBackgroundColor - the Color to be used when the workspace is the current one. Defaults to Blue or something
 flashingForegroundColor - the Color to be used when the workspace is flashing. Defaults to White
@@ -204,6 +204,7 @@ InputLanguageChangerPlugin - you give it some window class names and for windows
 ====================================================================
 
 Usage tips:
+
 - Windawesome is mainly targeted at programmers. Customization is done by writing code. Extension is done by writing code. Anyone who is not a programmer will have a very hard time figuring out how to use this.
 
 - The best way to customize window rules is via the so called "window class name". If you would like an in-depth explanation, please refer to MSDN, but in short - this is a unique string that is for a particular type of a window. I would suggest you use a program like WinSpy:
@@ -229,12 +230,20 @@ This will remove the Windows standard behaviour of the Alt key which focuses key
 ====================================================================
 
 Known bugs/limitations:
+
 - Do not attach or detach a monitor while Windawesome is running. This won't end good. Stop it and then restart it after you have connected/disconnected the monitor (and fixed your config files).
-- Whenever a label's text is longer than the width, ellipsis show. However, then the text alignment changes to Top or something. This is a bug in the .NET Framework since version 2.0 and hasn't been fixed even in 4.0.
+
+- Whenever a label's text is longer than the width, ellipsis show. However, then the text alignment changes to Top or something if using some particular fonts for the bars. This is a bug in the .NET Framework since version 2.0 and hasn't been fixed even in 4.0.
+
 - There is a minor chance that the System Tray Widget is not going to work properly in some case. Let me know if that happens with the exact scenario.
+
 - Do not dock an application that is managed - when you change the workspace Windawesome will hide it but the working area will not reset. If you want to dock a window - make sure it is not managed.
+
 - Do not use the same shared window (i.e. a window that is on more than one workspace) on two or more workspaces which are shown at the same time on two or more monitors. This will not work as you expect it.
+
+- If you restart the shell (explorer.exe by default), you will also need to restart Windawesome, as there seems to be some problem with it after that.
 
 ====================================================================
 
 For any suggestions, complaints or the likes, feel free to write to boris_petrov@live.com or use the discussions/issues tabs on the website.
+
