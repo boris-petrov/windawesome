@@ -977,7 +977,71 @@ namespace Windawesome
 			}
 		}
 
-		// TODO: AddBarToWorkspace(IBar bar, Workspace workspace) ?
+		public void AddBarToWorkspace(IBar bar, int workspaceId = 0, bool top = true,
+			int position = 0, Monitor monitor = null)
+		{
+			var workspace = workspaceId == 0 ? CurrentWorkspace : config.Workspaces[workspaceId - 1];
+			monitor = monitor ?? workspace.Monitor;
+			var bars = top ? workspace.barsAtTop[monitor.monitorIndex] : workspace.barsAtBottom[monitor.monitorIndex];
+			if (!bars.Contains(bar))
+			{
+				if (workspace.IsWorkspaceVisible)
+				{
+					workspace.Monitor.ShowHideBars(workspace, null);
+				}
+
+				// add bar to its place
+				var barPosition = bars.First;
+				while (barPosition != null && position-- > 0)
+				{
+					barPosition = barPosition.Next;
+				}
+				if (barPosition != null)
+				{
+					bars.AddBefore(barPosition, bar);
+				}
+				else
+				{
+					bars.AddLast(bar);
+				}
+
+				// remove and then add the workspace so the AppBars can be recreated
+				workspace.Monitor.RemoveWorkspace(workspace);
+				workspace.Monitor.AddWorkspace(workspace);
+
+				if (workspace.IsWorkspaceVisible)
+				{
+					workspace.Monitor.ShowHideBars(null, workspace);
+				}
+			}
+		}
+
+		public void RemoveBarFromWorkspace(IBar bar, int workspaceId = 0, Monitor monitor = null)
+		{
+			var workspace = workspaceId == 0 ? CurrentWorkspace : config.Workspaces[workspaceId - 1];
+			monitor = monitor ?? workspace.Monitor;
+			if (workspace.barsAtTop[monitor.monitorIndex].Contains(bar) || workspace.barsAtBottom[monitor.monitorIndex].Contains(bar))
+			{
+				if (workspace.IsWorkspaceVisible)
+				{
+					workspace.Monitor.ShowHideBars(workspace, null);
+				}
+
+				if (!workspace.barsAtTop[monitor.monitorIndex].Remove(bar))
+				{
+					workspace.barsAtBottom[monitor.monitorIndex].Remove(bar);
+				}
+
+				// remove and then add the workspace so the AppBars can be recreated
+				workspace.Monitor.RemoveWorkspace(workspace);
+				workspace.Monitor.AddWorkspace(workspace);
+
+				if (workspace.IsWorkspaceVisible)
+				{
+					workspace.Monitor.ShowHideBars(null, workspace);
+				}
+			}
+		}
 
 		public void ToggleWindowFloating(IntPtr hWnd)
 		{

@@ -321,53 +321,6 @@ namespace Windawesome
 			}
 		}
 
-		// TODO: implement those two:
-		//internal bool HideBar(int workspacesCount, IEnumerable<Workspace> workspaces, IBar hideBar)
-		//{
-		//    shownBars = shownBars.ToArray(); // because we need to hide the bar after that so we need to save the currently shown ones
-		//    if (barsAtTop.Remove(hideBar) || barsAtBottom.Remove(hideBar))
-		//    {
-		//        FindWorkspaceBarsEquivalentClasses(workspacesCount, workspaces);
-		//        ShowHideBars(null, null, appBarTopWindows[this.id - 1], appBarBottomWindows[this.id - 1]);
-
-		//        Reposition();
-
-		//        return true;
-		//    }
-
-		//    return false;
-		//}
-
-		//internal bool ShowBar(int workspacesCount, IEnumerable<Workspace> workspaces, IBar showBar, bool top, int position)
-		//{
-		//    if (!barsAtTop.Contains(showBar) && !barsAtBottom.Contains(showBar))
-		//    {
-		//        var bars = top ? barsAtTop : barsAtBottom;
-		//        var bar = bars.First;
-		//        while (bar != null && position-- > 0)
-		//        {
-		//            bar = bar.Next;
-		//        }
-		//        if (bar != null)
-		//        {
-		//            bars.AddBefore(bar, showBar);
-		//        }
-		//        else
-		//        {
-		//            bars.AddFirst(showBar);
-		//        }
-
-		//        FindWorkspaceBarsEquivalentClasses(workspacesCount, workspaces);
-		//        ShowHideBars(null, null, appBarTopWindows[this.id - 1], appBarBottomWindows[this.id - 1]);
-
-		//        Reposition();
-
-		//        return true;
-		//    }
-
-		//    return false;
-		//}
-
 		internal void WindowMinimized(IntPtr hWnd)
 		{
 			var window = GetWindow(hWnd);
