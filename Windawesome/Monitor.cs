@@ -309,15 +309,20 @@ namespace Windawesome
 
 			workspace.SwitchTo();
 
-			var oldWorkspace = workspaces[previousVisibleWorkspace];
-			var newWorkspace = workspaces[workspace];
-
 			// hides the Bars for the old workspace and shows the new ones
-			if (newWorkspace.Item1 != oldWorkspace.Item1)
+			ShowHideBars(previousVisibleWorkspace, workspace);
+		}
+
+		internal void ShowHideBars(Workspace oldWorkspace, Workspace newWorkspace)
+		{
+			var oldWorkspaceTuple = workspaces[oldWorkspace];
+			var newWorkspaceTuple = workspaces[newWorkspace];
+
+			if (newWorkspaceTuple.Item1 != oldWorkspaceTuple.Item1)
 			{
-				ShowHideBars(oldWorkspace.Item2, oldWorkspace.Item3,
-					newWorkspace.Item2, newWorkspace.Item3,
-					previousVisibleWorkspace, workspace);
+				ShowHideBars(oldWorkspaceTuple.Item2, oldWorkspaceTuple.Item3,
+					newWorkspaceTuple.Item2, newWorkspaceTuple.Item3,
+					oldWorkspace, newWorkspace);
 			}
 		}
 
