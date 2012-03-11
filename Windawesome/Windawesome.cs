@@ -643,6 +643,36 @@ namespace Windawesome
 			}
 		}
 
+		private void SwapWorkspacesMonitorsAndSwitchTo(Workspace workspace)
+		{
+			// first add the workspaces to their new monitors
+			workspace.Monitor.AddWorkspace(CurrentWorkspace);
+			CurrentWorkspace.Monitor.AddWorkspace(workspace);
+
+			// show the new bars while hiding the old ones
+			workspace.Monitor.ShowHideBars(workspace, CurrentWorkspace);
+			CurrentWorkspace.Monitor.ShowHideBars(CurrentWorkspace, workspace);
+
+			// only then remove the old workspaces from the monitors
+			workspace.Monitor.RemoveWorkspace(workspace);
+			CurrentWorkspace.Monitor.RemoveWorkspace(CurrentWorkspace);
+
+			// swap the workspaces' monitors
+			var currentWorkspaceMonitor = CurrentWorkspace.Monitor;
+			CurrentWorkspace.Monitor = workspace.Monitor;
+			workspace.Monitor = currentWorkspaceMonitor;
+
+			// reposition the windows in the two workspaces
+			workspace.Reposition();
+			CurrentWorkspace.Reposition();
+
+			// finally switch to the workspace
+			SwitchToWorkspace(workspace.id);
+
+			Workspace.DoWorkspaceMonitorChanged(workspace, CurrentWorkspace.Monitor, workspace.Monitor);
+			Workspace.DoWorkspaceMonitorChanged(CurrentWorkspace, workspace.Monitor, CurrentWorkspace.Monitor);
+		}
+
 		#endregion
 
 		#region API
@@ -771,28 +801,28 @@ namespace Windawesome
 			}
 		}
 
-		//public void SwapWorkspace(int workspaceIdToSwapWith = 0)
-		//{
-		//    if (workspaceIdToSwapWith == 0 || config.Workspaces[workspaceIdToSwapWith - 1].IsCurrentWorkspace)
-		//    {
-		//        return ;
-		//    }
+		public void SwapCurrentWorkspaceWith(int workspaceIdToSwapWith = 0)
+		{
+			if (workspaceIdToSwapWith == 0 || config.Workspaces[workspaceIdToSwapWith - 1].IsCurrentWorkspace)
+			{
+				return ;
+			}
 
-		//    var workspace = config.Workspaces[workspaceIdToSwapWith - 1];
+			var workspace = config.Workspaces[workspaceIdToSwapWith - 1];
 
-		//    if (workspace.IsWorkspaceVisible)
-		//    {
-		//        SwapWorkspacesMonitors(workspace, CurrentWorkspace);
-		//    }
-		//    else if (workspace.Monitor != CurrentWorkspace.Monitor)
-		//    {
-		//        MoveWorkspaceToMonitor(workspace, CurrentWorkspace.Monitor);
-		//    }
-		//    else
-		//    {
-		//        SwitchToWorkspace(workspaceIdToSwapWith);
-		//    }
-		//}
+			if (workspace.IsWorkspaceVisible)
+			{
+				SwapWorkspacesMonitorsAndSwitchTo(workspace);
+			}
+			else if (workspace.Monitor != CurrentWorkspace.Monitor)
+			{
+				MoveWorkspaceToMonitor(workspace, CurrentWorkspace.Monitor);
+			}
+			else
+			{
+				SwitchToWorkspace(workspaceIdToSwapWith);
+			}
+		}
 
 		public void SwitchToNextMonitor()
 		{
