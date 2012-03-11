@@ -268,8 +268,7 @@ namespace Windawesome
 
 		internal void Initialize()
 		{
-			var workspaceTuple = workspaces[CurrentVisibleWorkspace];
-			ShowHideBars(null, null, workspaceTuple.Item2, workspaceTuple.Item3, CurrentVisibleWorkspace, CurrentVisibleWorkspace);
+			ShowHideBars(null, CurrentVisibleWorkspace);
 
 			CurrentVisibleWorkspace.SwitchTo();
 		}
@@ -315,14 +314,18 @@ namespace Windawesome
 
 		internal void ShowHideBars(Workspace oldWorkspace, Workspace newWorkspace)
 		{
-			var oldWorkspaceTuple = workspaces[oldWorkspace];
-			var newWorkspaceTuple = workspaces[newWorkspace];
+			var oldWorkspaceTuple = oldWorkspace == null ? null : workspaces[oldWorkspace];
+			var newWorkspaceTuple = newWorkspace == null ? null : workspaces[newWorkspace];
 
-			if (newWorkspaceTuple.Item1 != oldWorkspaceTuple.Item1)
+			if (newWorkspaceTuple == null || oldWorkspaceTuple == null || newWorkspaceTuple.Item1 != oldWorkspaceTuple.Item1)
 			{
-				ShowHideBars(oldWorkspaceTuple.Item2, oldWorkspaceTuple.Item3,
-					newWorkspaceTuple.Item2, newWorkspaceTuple.Item3,
-					oldWorkspace, newWorkspace);
+				ShowHideBars(
+					oldWorkspaceTuple == null ? null : oldWorkspaceTuple.Item2,
+					oldWorkspaceTuple == null ? null : oldWorkspaceTuple.Item3,
+					newWorkspaceTuple == null ? null : newWorkspaceTuple.Item2,
+					newWorkspaceTuple == null ? null : newWorkspaceTuple.Item3,
+					oldWorkspace ?? newWorkspace,
+					newWorkspace);
 			}
 		}
 
@@ -414,8 +417,8 @@ namespace Windawesome
 
 			var oldBarsAtTop = oldWorkspace.barsAtTop[monitorIndex];
 			var oldBarsAtBottom = oldWorkspace.barsAtBottom[monitorIndex];
-			var newBarsAtTop = newWorkspace.barsAtTop[monitorIndex];
-			var newBarsAtBottom = newWorkspace.barsAtBottom[monitorIndex];
+			var newBarsAtTop = newWorkspace == null ? new LinkedList<IBar>() : newWorkspace.barsAtTop[monitorIndex];
+			var newBarsAtBottom = newWorkspace == null ? new LinkedList<IBar>() : newWorkspace.barsAtBottom[monitorIndex];
 
 			// first position and show new bars
 			var winPosInfo = NativeMethods.BeginDeferWindowPos(newBarsAtTop.Count + newBarsAtBottom.Count);
