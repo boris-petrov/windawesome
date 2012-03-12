@@ -977,12 +977,10 @@ namespace Windawesome
 			}
 		}
 
-		public void AddBarToWorkspace(IBar bar, int workspaceId = 0, bool top = true,
-			int position = 0, Monitor monitor = null)
+		public void AddBarToWorkspace(IBar bar, int workspaceId = 0, bool top = true, int position = 0)
 		{
 			var workspace = workspaceId == 0 ? CurrentWorkspace : config.Workspaces[workspaceId - 1];
-			monitor = monitor ?? workspace.Monitor;
-			var bars = top ? workspace.barsAtTop[monitor.monitorIndex] : workspace.barsAtBottom[monitor.monitorIndex];
+			var bars = top ? workspace.barsAtTop[bar.Monitor.monitorIndex] : workspace.barsAtBottom[bar.Monitor.monitorIndex];
 			if (!bars.Contains(bar))
 			{
 				if (workspace.IsWorkspaceVisible)
@@ -1016,20 +1014,19 @@ namespace Windawesome
 			}
 		}
 
-		public void RemoveBarFromWorkspace(IBar bar, int workspaceId = 0, Monitor monitor = null)
+		public void RemoveBarFromWorkspace(IBar bar, int workspaceId = 0)
 		{
 			var workspace = workspaceId == 0 ? CurrentWorkspace : config.Workspaces[workspaceId - 1];
-			monitor = monitor ?? workspace.Monitor;
-			if (workspace.barsAtTop[monitor.monitorIndex].Contains(bar) || workspace.barsAtBottom[monitor.monitorIndex].Contains(bar))
+			if (workspace.barsAtTop[bar.Monitor.monitorIndex].Contains(bar) || workspace.barsAtBottom[bar.Monitor.monitorIndex].Contains(bar))
 			{
 				if (workspace.IsWorkspaceVisible)
 				{
 					workspace.Monitor.ShowHideBars(workspace, null);
 				}
 
-				if (!workspace.barsAtTop[monitor.monitorIndex].Remove(bar))
+				if (!workspace.barsAtTop[bar.Monitor.monitorIndex].Remove(bar))
 				{
-					workspace.barsAtBottom[monitor.monitorIndex].Remove(bar);
+					workspace.barsAtBottom[bar.Monitor.monitorIndex].Remove(bar);
 				}
 
 				// remove and then add the workspace so the AppBars can be recreated
