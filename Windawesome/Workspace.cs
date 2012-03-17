@@ -36,11 +36,6 @@ namespace Windawesome
 			}
 		}
 
-		public IEnumerable<IBar> BarsForCurrentMonitor
-		{
-			get { return barsAtTop[Monitor.monitorIndex].Concat(barsAtBottom[Monitor.monitorIndex]); }
-		}
-
 		internal uint hideFromAltTabWhenOnInactiveWorkspaceCount;
 		internal uint sharedWindowsCount;
 

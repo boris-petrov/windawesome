@@ -645,22 +645,34 @@ namespace Windawesome
 
 		private void SwapWorkspacesMonitorsAndSwitchTo(Workspace workspace)
 		{
+			var currentWorkspaceMonitor = CurrentWorkspace.Monitor;
+			var newWorkspaceMonitor = workspace.Monitor;
+
+			currentWorkspaceMonitor.HideBars(workspace, CurrentWorkspace);
+			newWorkspaceMonitor.HideBars(CurrentWorkspace, workspace);
+
 			// first add the workspaces to their new monitors
-			workspace.Monitor.AddWorkspace(CurrentWorkspace);
-			CurrentWorkspace.Monitor.AddWorkspace(workspace);
+			newWorkspaceMonitor.AddWorkspace(CurrentWorkspace);
+			currentWorkspaceMonitor.AddWorkspace(workspace);
 
 			// show the new bars while hiding the old ones
-			workspace.Monitor.ShowHideBars(workspace, CurrentWorkspace);
-			CurrentWorkspace.Monitor.ShowHideBars(CurrentWorkspace, workspace);
+			newWorkspaceMonitor.ShowHideAppBars(workspace, CurrentWorkspace);
+			currentWorkspaceMonitor.ShowHideAppBars(CurrentWorkspace, workspace);
 
 			// only then remove the old workspaces from the monitors
-			workspace.Monitor.RemoveWorkspace(workspace);
-			CurrentWorkspace.Monitor.RemoveWorkspace(CurrentWorkspace);
+			newWorkspaceMonitor.RemoveWorkspace(workspace);
+			currentWorkspaceMonitor.RemoveWorkspace(CurrentWorkspace);
 
 			// swap the workspaces' monitors
-			var currentWorkspaceMonitor = CurrentWorkspace.Monitor;
-			CurrentWorkspace.Monitor = workspace.Monitor;
+			CurrentWorkspace.Monitor = newWorkspaceMonitor;
 			workspace.Monitor = currentWorkspaceMonitor;
+
+			// swap the monitors' current visible workspaces
+			currentWorkspaceMonitor.CurrentVisibleWorkspace = workspace;
+			newWorkspaceMonitor.CurrentVisibleWorkspace = CurrentWorkspace;
+
+			currentWorkspaceMonitor.ShowBars(workspace);
+			newWorkspaceMonitor.ShowBars(CurrentWorkspace);
 
 			// reposition the windows in the two workspaces
 			workspace.Reposition();
@@ -985,7 +997,7 @@ namespace Windawesome
 			{
 				if (workspace.IsWorkspaceVisible)
 				{
-					workspace.Monitor.ShowHideBars(workspace, null);
+					workspace.Monitor.ShowHideAppBars(workspace, null);
 				}
 
 				// add bar to its place
@@ -1009,7 +1021,7 @@ namespace Windawesome
 
 				if (workspace.IsWorkspaceVisible)
 				{
-					workspace.Monitor.ShowHideBars(null, workspace);
+					workspace.Monitor.ShowHideAppBars(null, workspace);
 				}
 			}
 		}
@@ -1021,7 +1033,7 @@ namespace Windawesome
 			{
 				if (workspace.IsWorkspaceVisible)
 				{
-					workspace.Monitor.ShowHideBars(workspace, null);
+					workspace.Monitor.ShowHideAppBars(workspace, null);
 				}
 
 				if (!workspace.barsAtTop[bar.Monitor.monitorIndex].Remove(bar))
@@ -1035,7 +1047,7 @@ namespace Windawesome
 
 				if (workspace.IsWorkspaceVisible)
 				{
-					workspace.Monitor.ShowHideBars(null, workspace);
+					workspace.Monitor.ShowHideAppBars(null, workspace);
 				}
 			}
 		}

@@ -165,8 +165,7 @@ namespace Windawesome
 			{
 				Tuple<IntPtr, Panel> tuple;
 				var applications = applicationPanels[workspace.id - 1];
-				if (workspace.Monitor == bar.Monitor &&
-					(tuple = applications.FirstOrDefault(t => t.Item1 == window.hWnd)) != null)
+				if ((tuple = applications.FirstOrDefault(t => t.Item1 == window.hWnd)) != null)
 				{
 					tuple.Item2.Controls[1].Text = newText;
 				}
@@ -175,8 +174,7 @@ namespace Windawesome
 			{
 				Tuple<IntPtr, Panel> tuple;
 				var applications = applicationPanels[workspace.id - 1];
-				if (workspace.Monitor == bar.Monitor &&
-					(tuple = applications.FirstOrDefault(t => t.Item1 == window.hWnd)) != null)
+				if ((tuple = applications.FirstOrDefault(t => t.Item1 == window.hWnd)) != null)
 				{
 					((PictureBox) tuple.Item2.Controls[0]).Image = newIcon;
 				}
@@ -185,34 +183,31 @@ namespace Windawesome
 
 		private void OnWorkspaceWindowAdded(Workspace workspace, Window window)
 		{
-			if (WorkspaceContainsBarOnCurrentMonitor(workspace, bar))
+			var workspaceId = workspace.id - 1;
+			var newPanel = CreatePanel(window);
+
+			applicationPanels[workspaceId].AddFirst(Tuple.Create(window.hWnd, newPanel));
+
+			if (isShown && bar.Monitor == workspace.Monitor && workspace.IsWorkspaceVisible)
 			{
-				var workspaceId = workspace.id - 1;
-				var newPanel = CreatePanel(window);
-
-				applicationPanels[workspaceId].AddFirst(Tuple.Create(window.hWnd, newPanel));
-
-				if (isShown && workspace.IsWorkspaceVisible)
-				{
-					ResizeApplicationPanels(left, right, workspaceId);
-				}
-				else
-				{
-					newPanel.Hide();
-					mustResize[workspaceId] = true;
-				}
-				bar.DoSpanWidgetControlsAdded(this, new[] { newPanel });
+				ResizeApplicationPanels(left, right, workspaceId);
 			}
+			else
+			{
+				newPanel.Hide();
+				mustResize[workspaceId] = true;
+			}
+			bar.DoSpanWidgetControlsAdded(this, new[] { newPanel });
 		}
 
 		private void OnWorkspaceWindowRemoved(Workspace workspace, Window window)
 		{
 			var workspaceId = workspace.id - 1;
 			var tuple = applicationPanels[workspaceId].FirstOrDefault(t => t.Item1 == window.hWnd);
-			if (workspace.Monitor == bar.Monitor && tuple != null)
+			if (tuple != null)
 			{
 				applicationPanels[workspaceId].Remove(tuple);
-				if (isShown && workspace.IsWorkspaceVisible)
+				if (isShown && bar.Monitor == workspace.Monitor && workspace.IsWorkspaceVisible)
 				{
 					ResizeApplicationPanels(left, right, workspaceId);
 				}
@@ -226,45 +221,42 @@ namespace Windawesome
 
 		private void OnWorkspaceWindowOrderChanged(Workspace workspace, Window window, int positions, bool backwards)
 		{
-			if (WorkspaceContainsBarOnCurrentMonitor(workspace, bar))
+			var applications = applicationPanels[workspace.id - 1];
+			for (var node = applications.First; node != null; node = node.Next)
 			{
-				var applications = applicationPanels[workspace.id - 1];
-				for (var node = applications.First; node != null; node = node.Next)
+				if (node.Value.Item1 == window.hWnd)
 				{
-					if (node.Value.Item1 == window.hWnd)
+					var otherNode = backwards ? node.Previous : node.Next;
+					applications.Remove(node);
+					for (var i = 1; i < positions; i++)
 					{
-						var otherNode = backwards ? node.Previous : node.Next;
-						applications.Remove(node);
-						for (var i = 1; i < positions; i++)
-						{
-							otherNode = backwards ? otherNode.Previous : otherNode.Next;
-						}
-						if (backwards)
-						{
-							applications.AddBefore(otherNode, node);
-						}
-						else
-						{
-							applications.AddAfter(otherNode, node);
-						}
-						break;
+						otherNode = backwards ? otherNode.Previous : otherNode.Next;
 					}
+					if (backwards)
+					{
+						applications.AddBefore(otherNode, node);
+					}
+					else
+					{
+						applications.AddAfter(otherNode, node);
+					}
+					break;
 				}
+			}
 
-				if (isShown)
-				{
-					ResizeApplicationPanels(left, right, workspace.id - 1);
-				}
-				else
-				{
-					mustResize[workspace.id - 1] = true;
-				}
+			if (isShown && bar.Monitor == workspace.Monitor && workspace.IsWorkspaceVisible)
+			{
+				ResizeApplicationPanels(left, right, workspace.id - 1);
+			}
+			else
+			{
+				mustResize[workspace.id - 1] = true;
 			}
 		}
 
 		private void OnWorkspaceShown(Workspace workspace)
 		{
-			if (WorkspaceContainsBarOnCurrentMonitor(workspace, bar))
+			if (isShown && bar.Monitor == workspace.Monitor)
 			{
 				var workspaceId = workspace.id - 1;
 				if (applicationPanels[workspaceId].Count > 0)
@@ -284,7 +276,7 @@ namespace Windawesome
 
 		private void OnWorkspaceHidden(Workspace workspace)
 		{
-			if (WorkspaceContainsBarOnCurrentMonitor(workspace, bar))
+			if (isShown && bar.Monitor == workspace.Monitor)
 			{
 				var workspaceId = workspace.id - 1;
 				if (applicationPanels[workspaceId].Count > 0)
@@ -304,18 +296,13 @@ namespace Windawesome
 		private void OnBarShown()
 		{
 			isShown = true;
-			windawesome.monitors.ForEach(m => OnWorkspaceShown(m.CurrentVisibleWorkspace));
+			//windawesome.monitors.ForEach(m => OnWorkspaceShown(m.CurrentVisibleWorkspace));
 		}
 
 		private void OnBarHidden()
 		{
-			windawesome.monitors.ForEach(m => OnWorkspaceHidden(m.CurrentVisibleWorkspace));
+			//windawesome.monitors.ForEach(m => OnWorkspaceHidden(m.CurrentVisibleWorkspace));
 			isShown = false;
-		}
-
-		private static bool WorkspaceContainsBarOnCurrentMonitor(Workspace workspace, IBar bar)
-		{
-			return workspace.BarsForCurrentMonitor.Contains(bar);
 		}
 
 		#region IWidget Members

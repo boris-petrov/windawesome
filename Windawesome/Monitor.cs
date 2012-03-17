@@ -11,7 +11,7 @@ namespace Windawesome
 		public readonly int monitorIndex;
 		public readonly IntPtr handle;
 		public readonly Screen screen;
-		public Workspace CurrentVisibleWorkspace { get; private set; }
+		public Workspace CurrentVisibleWorkspace { get; internal set; }
 		public IEnumerable<Workspace> Workspaces { get { return workspaces.Keys; } }
 		public Rectangle Bounds { get; private set; }
 		public Rectangle WorkingArea { get; private set; }
@@ -268,7 +268,11 @@ namespace Windawesome
 
 		internal void Initialize()
 		{
-			ShowHideBars(null, CurrentVisibleWorkspace);
+			ShowHideAppBars(null, CurrentVisibleWorkspace);
+
+			var newBarsAtTop = CurrentVisibleWorkspace.barsAtTop[monitorIndex];
+			var newBarsAtBottom = CurrentVisibleWorkspace.barsAtBottom[monitorIndex];
+			newBarsAtTop.Concat(newBarsAtBottom).ForEach(b => b.Show());
 
 			CurrentVisibleWorkspace.SwitchTo();
 		}
@@ -297,34 +301,53 @@ namespace Windawesome
 		{
 			CurrentVisibleWorkspace.Unswitch();
 
+			HideBars(workspace, CurrentVisibleWorkspace);
+
 			// hides or shows the Windows taskbar
 			if (screen.Primary && workspace.ShowWindowsTaskbar != isWindowsTaskbarShown)
 			{
 				ShowHideWindowsTaskbar(workspace.ShowWindowsTaskbar);
 			}
 
-			var previousVisibleWorkspace = CurrentVisibleWorkspace;
+			ShowHideAppBars(CurrentVisibleWorkspace, workspace);
+
 			CurrentVisibleWorkspace = workspace;
 
-			workspace.SwitchTo();
+			ShowBars(CurrentVisibleWorkspace);
 
-			// hides the Bars for the old workspace and shows the new ones
-			ShowHideBars(previousVisibleWorkspace, workspace);
+			workspace.SwitchTo();
 		}
 
-		internal void ShowHideBars(Workspace oldWorkspace, Workspace newWorkspace)
+		internal void HideBars(Workspace newWorkspace, Workspace oldWorkspace)
+		{
+			var oldBarsAtTop = oldWorkspace.barsAtTop[monitorIndex];
+			var oldBarsAtBottom = oldWorkspace.barsAtBottom[monitorIndex];
+			var newBarsAtTop = newWorkspace.barsAtTop[monitorIndex];
+			var newBarsAtBottom = newWorkspace.barsAtBottom[monitorIndex];
+
+			oldBarsAtTop.Concat(oldBarsAtBottom).Except(newBarsAtTop.Concat(newBarsAtBottom)).ForEach(b => b.Hide());
+		}
+
+		internal void ShowBars(Workspace workspace)
+		{
+			var newBarsAtTop = workspace.barsAtTop[monitorIndex];
+			var newBarsAtBottom = workspace.barsAtBottom[monitorIndex];
+
+			newBarsAtTop.Concat(newBarsAtBottom).ForEach(b => b.Show());
+		}
+
+		internal void ShowHideAppBars(Workspace oldWorkspace, Workspace newWorkspace)
 		{
 			var oldWorkspaceTuple = oldWorkspace == null ? null : workspaces[oldWorkspace];
-			var newWorkspaceTuple = newWorkspace == null ? null : workspaces[newWorkspace];
+			var newWorkspaceTuple = workspaces[newWorkspace];
 
-			if (newWorkspaceTuple == null || oldWorkspaceTuple == null || newWorkspaceTuple.Item1 != oldWorkspaceTuple.Item1)
+			if (oldWorkspaceTuple == null || newWorkspaceTuple.Item1 != oldWorkspaceTuple.Item1)
 			{
 				ShowHideBars(
 					oldWorkspaceTuple == null ? null : oldWorkspaceTuple.Item2,
 					oldWorkspaceTuple == null ? null : oldWorkspaceTuple.Item3,
-					newWorkspaceTuple == null ? null : newWorkspaceTuple.Item2,
-					newWorkspaceTuple == null ? null : newWorkspaceTuple.Item3,
-					oldWorkspace ?? newWorkspace,
+					newWorkspaceTuple.Item2,
+					newWorkspaceTuple.Item3,
 					newWorkspace);
 			}
 		}
@@ -410,15 +433,13 @@ namespace Windawesome
 
 		private void ShowHideBars(AppBarNativeWindow previousAppBarTopWindow, AppBarNativeWindow previousAppBarBottomWindow,
 			AppBarNativeWindow newAppBarTopWindow, AppBarNativeWindow newAppBarBottomWindow,
-			Workspace oldWorkspace, Workspace newWorkspace)
+			Workspace newWorkspace)
 		{
 			ShowHideAppBarForms(previousAppBarTopWindow, newAppBarTopWindow);
 			ShowHideAppBarForms(previousAppBarBottomWindow, newAppBarBottomWindow);
 
-			var oldBarsAtTop = oldWorkspace.barsAtTop[monitorIndex];
-			var oldBarsAtBottom = oldWorkspace.barsAtBottom[monitorIndex];
-			var newBarsAtTop = newWorkspace == null ? new LinkedList<IBar>() : newWorkspace.barsAtTop[monitorIndex];
-			var newBarsAtBottom = newWorkspace == null ? new LinkedList<IBar>() : newWorkspace.barsAtBottom[monitorIndex];
+			var newBarsAtTop = newWorkspace.barsAtTop[monitorIndex];
+			var newBarsAtBottom = newWorkspace.barsAtBottom[monitorIndex];
 
 			// first position and show new bars
 			var winPosInfo = NativeMethods.BeginDeferWindowPos(newBarsAtTop.Count + newBarsAtBottom.Count);
@@ -431,11 +452,6 @@ namespace Windawesome
 				winPosInfo = newAppBarBottomWindow.PositionBars(winPosInfo, newBarsAtBottom);
 			}
 			NativeMethods.EndDeferWindowPos(winPosInfo);
-
-			newBarsAtTop.Concat(newBarsAtBottom).ForEach(b => b.Show());
-
-			// and only after that hide the old ones to avoid flickering
-			oldBarsAtTop.Concat(oldBarsAtBottom).Except(newBarsAtTop.Concat(newBarsAtBottom)).ForEach(b => b.Hide());
 		}
 
 		private void ShowHideAppBarForms(AppBarNativeWindow hideForm, AppBarNativeWindow showForm)

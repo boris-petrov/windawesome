@@ -18,7 +18,6 @@ namespace Windawesome
 		private readonly Color flashingForegroundColor;
 		private readonly Color flashingBackgroundColor;
 		private bool isLeft;
-		private bool isShown;
 		private readonly bool flashWorkspaces;
 
 		private static Windawesome windawesome;
@@ -83,12 +82,12 @@ namespace Windawesome
 		private void SetWorkspaceLabelColor(Workspace workspace)
 		{
 			var workspaceLabel = workspaceLabels[workspace.id - 1];
-			if (workspace.IsCurrentWorkspace && isShown)
+			if (workspace.IsCurrentWorkspace)
 			{
 				workspaceLabel.BackColor = highlightedBackgroundColor;
 				workspaceLabel.ForeColor = highlightedForegroundColor;
 			}
-			else if (workspace.IsWorkspaceVisible && isShown)
+			else if (workspace.IsWorkspaceVisible)
 			{
 				workspaceLabel.BackColor = highlightedInactiveBackgroundColor;
 				workspaceLabel.ForeColor = highlightedInactiveForegroundColor;
@@ -107,10 +106,7 @@ namespace Windawesome
 
 		private void OnWorkspaceChangedFromTo(Workspace workspace)
 		{
-			if (isShown)
-			{
-				SetWorkspaceLabelColor(workspace);
-			}
+			SetWorkspaceLabelColor(workspace);
 		}
 
 		private static void OnWindowFlashing(LinkedList<Tuple<Workspace, Window>> list)
@@ -149,38 +145,18 @@ namespace Windawesome
 
 		private void OnTimerTick(object sender, EventArgs e)
 		{
-			if (isShown)
+			foreach (var flashingWorkspace in flashingWorkspaces)
 			{
-				foreach (var flashingWorkspace in flashingWorkspaces)
+				if (workspaceLabels[flashingWorkspace.id - 1].BackColor == flashingBackgroundColor)
 				{
-					if (workspaceLabels[flashingWorkspace.id - 1].BackColor == flashingBackgroundColor)
-					{
-						SetWorkspaceLabelColor(flashingWorkspace);
-					}
-					else
-					{
-						workspaceLabels[flashingWorkspace.id - 1].BackColor = flashingBackgroundColor;
-						workspaceLabels[flashingWorkspace.id - 1].ForeColor = flashingForegroundColor;
-					}
+					SetWorkspaceLabelColor(flashingWorkspace);
+				}
+				else
+				{
+					workspaceLabels[flashingWorkspace.id - 1].BackColor = flashingBackgroundColor;
+					workspaceLabels[flashingWorkspace.id - 1].ForeColor = flashingForegroundColor;
 				}
 			}
-		}
-
-		private void OnBarShown()
-		{
-			isShown = true;
-			windawesome.monitors.ForEach(m => SetWorkspaceLabelColor(m.CurrentVisibleWorkspace));
-		}
-
-		private void OnBarHidden()
-		{
-			isShown = false;
-
-			if (flashWorkspaces)
-			{
-				flashingWindows.Values.ForEach(SetWorkspaceLabelColor);
-			}
-			windawesome.monitors.ForEach(m => SetWorkspaceLabelColor(m.CurrentVisibleWorkspace));
 		}
 
 		#region IWidget Members
@@ -198,10 +174,8 @@ namespace Windawesome
 				OnWorkspaceFlashingStopped += SetWorkspaceLabelColor;
 			}
 
-			isShown = false;
-
-			bar.BarShown += OnBarShown;
-			bar.BarHidden += OnBarHidden;
+			bar.BarShown += () => flashTimer.Start();
+			bar.BarHidden += () => flashTimer.Stop();
 
 			workspaceLabels = new Label[windawesome.config.Workspaces.Length];
 
