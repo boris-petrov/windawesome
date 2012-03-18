@@ -218,8 +218,17 @@ namespace Windawesome
 
 		private void OnDisplaySettingsChanged(object sender, EventArgs e)
 		{
-			monitors.ForEach(m => m.SetBoundsAndWorkingArea());
-			config.Workspaces.ForEach(ws => ws.Reposition());
+			if (Screen.AllScreens.Length != monitors.Length)
+			{
+				// new monitor has been attached or an old one removed
+				
+				this.Quit();
+			}
+			else
+			{
+				monitors.ForEach(m => m.SetBoundsAndWorkingArea());
+				config.Workspaces.ForEach(ws => ws.Reposition());
+			}
 		}
 
 		private void OnSessionEnding(object sender, SessionEndingEventArgs e)
