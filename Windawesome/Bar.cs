@@ -365,7 +365,7 @@ namespace Windawesome
 			label.Font = font;
 			label.Size = new Size(width == -1 ? TextRenderer.MeasureText(label.Text, label.Font).Width : width, this.barHeight);
 			label.Location = new Point(xLocation, 0);
-			label.TextAlign = ContentAlignment.MiddleLeft; // TODO: this doesn't work when there are ellipsis
+			label.TextAlign = ContentAlignment.MiddleLeft; // TODO: this doesn't work when there are ellipsis for certain fonts/font-sizes
 			label.ResumeLayout();
 
 			return label;
