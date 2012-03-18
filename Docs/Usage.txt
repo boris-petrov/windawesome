@@ -231,9 +231,9 @@ This will remove the Windows standard behaviour of the Alt key which focuses key
 
 Known bugs/limitations:
 
-- Do not attach or detach a monitor while Windawesome is running. This won't end good. Stop it and then restart it after you have connected/disconnected the monitor (and fixed your config files).
+- Attaching or detaching a monitor while Windawesome is running will quit the application. You will have to restart it manually if you want to continue using it (after having fixed your config files to work with the new hardware, of course).
 
-- Whenever a label's text is longer than the width, ellipsis show. However, then the text alignment changes to Top or something if using some particular fonts for the bars. This is a bug in the .NET Framework since version 2.0 and hasn't been fixed even in 4.0.
+- Whenever a label's text is longer than the width, ellipsis show. However, then the text alignment changes to Top or something if using some particular fonts/font-sizes for the bars. This is a bug in the .NET Framework since version 2.0 and hasn't been fixed even in 4.0.
 
 - There is a minor chance that the System Tray Widget is not going to work properly in some case. Let me know if that happens with the exact scenario.
 
