@@ -296,12 +296,10 @@ namespace Windawesome
 		private void OnBarShown()
 		{
 			isShown = true;
-			//windawesome.monitors.ForEach(m => OnWorkspaceShown(m.CurrentVisibleWorkspace));
 		}
 
 		private void OnBarHidden()
 		{
-			//windawesome.monitors.ForEach(m => OnWorkspaceHidden(m.CurrentVisibleWorkspace));
 			isShown = false;
 		}
 
