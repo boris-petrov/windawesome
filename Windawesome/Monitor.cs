@@ -270,9 +270,7 @@ namespace Windawesome
 		{
 			ShowHideAppBars(null, CurrentVisibleWorkspace);
 
-			var newBarsAtTop = CurrentVisibleWorkspace.barsAtTop[monitorIndex];
-			var newBarsAtBottom = CurrentVisibleWorkspace.barsAtBottom[monitorIndex];
-			newBarsAtTop.Concat(newBarsAtBottom).ForEach(b => b.Show());
+			ShowBars(CurrentVisibleWorkspace);
 
 			CurrentVisibleWorkspace.SwitchTo();
 		}
