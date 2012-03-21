@@ -205,8 +205,11 @@ namespace Windawesome
 
 		void IBar.Show()
 		{
-			this.form.Show();
-			DoBarShown();
+			if (!this.form.Visible)
+			{
+				this.form.Show();
+				DoBarShown();
+			}
 		}
 
 		void IBar.Hide()
