@@ -341,7 +341,7 @@ namespace Windawesome
 
 			if (oldWorkspaceTuple == null || newWorkspaceTuple.Item1 != oldWorkspaceTuple.Item1)
 			{
-				ShowHideBars(
+				ShowHideAppBarsAndRepositionBars(
 					oldWorkspaceTuple == null ? null : oldWorkspaceTuple.Item2,
 					oldWorkspaceTuple == null ? null : oldWorkspaceTuple.Item3,
 					newWorkspaceTuple.Item2,
@@ -429,7 +429,7 @@ namespace Windawesome
 			}
 		}
 
-		private void ShowHideBars(AppBarNativeWindow previousAppBarTopWindow, AppBarNativeWindow previousAppBarBottomWindow,
+		private void ShowHideAppBarsAndRepositionBars(AppBarNativeWindow previousAppBarTopWindow, AppBarNativeWindow previousAppBarBottomWindow,
 			AppBarNativeWindow newAppBarTopWindow, AppBarNativeWindow newAppBarBottomWindow,
 			Workspace newWorkspace)
 		{
@@ -439,7 +439,6 @@ namespace Windawesome
 			var newBarsAtTop = newWorkspace.barsAtTop[monitorIndex];
 			var newBarsAtBottom = newWorkspace.barsAtBottom[monitorIndex];
 
-			// first position and show new bars
 			var winPosInfo = NativeMethods.BeginDeferWindowPos(newBarsAtTop.Count + newBarsAtBottom.Count);
 			if (newAppBarTopWindow != null)
 			{
