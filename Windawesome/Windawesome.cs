@@ -1337,6 +1337,8 @@ namespace Windawesome
 				LinkedList<Tuple<Workspace, Window>> list;
 				switch ((NativeMethods.ShellEvents) m.WParam)
 				{
+					// TODO: these couple of things are the only ones that cannot be done with WinEvents
+					// (as far as I can tell) - it would be nice to remove the shell hook and use only WinEvents
 					case NativeMethods.ShellEvents.HSHELL_REDRAW:
 						if (applications.TryGetValue(m.LParam, out list))
 						{
@@ -1356,8 +1358,6 @@ namespace Windawesome
 							}
 						}
 						break;
-					// this is the only thing that cannot be done with WinEvents (as far as I can tell)
-					// it would be nice to remove the shell hook and use only WinEvents
 					case NativeMethods.ShellEvents.HSHELL_FLASH:
 						if (ApplicationsTryGetValue(m.LParam, out list))
 						{
