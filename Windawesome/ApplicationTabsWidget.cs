@@ -293,6 +293,23 @@ namespace Windawesome
 			}
 		}
 
+		private void OnWorkspaceMonitorChanged(Workspace workspace, Monitor oldMonitor, Monitor newMonitor)
+		{
+			if (bar.Monitor == oldMonitor || bar.Monitor == newMonitor)
+			{
+				applicationPanels.ForEach(p => p.ForEach(t => t.Item2.Hide()));
+
+				if (mustResize[bar.Monitor.CurrentVisibleWorkspace.id - 1])
+				{
+					ResizeApplicationPanels(left, right, bar.Monitor.CurrentVisibleWorkspace.id - 1);
+				}
+				if (!showSingleApplicationTab)
+				{
+					applicationPanels[bar.Monitor.CurrentVisibleWorkspace.id - 1].ForEach(t => t.Item2.Show());
+				}
+			}
+		}
+
 		private void OnBarShown()
 		{
 			isShown = true;
@@ -326,6 +343,7 @@ namespace Windawesome
 			Workspace.WorkspaceShown += OnWorkspaceShown;
 			Workspace.WorkspaceDeactivated += _ => OnWindowActivated(IntPtr.Zero);
 			Workspace.WorkspaceWindowOrderChanged += OnWorkspaceWindowOrderChanged;
+			Workspace.WorkspaceMonitorChanged += OnWorkspaceMonitorChanged;
 
 			currentlyHighlightedPanel = null;
 
