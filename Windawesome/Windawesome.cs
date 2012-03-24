@@ -690,8 +690,8 @@ namespace Windawesome
 			// finally switch to the workspace
 			SwitchToWorkspace(workspace.id);
 
-			Workspace.DoWorkspaceMonitorChanged(workspace, CurrentWorkspace.Monitor, workspace.Monitor);
-			Workspace.DoWorkspaceMonitorChanged(CurrentWorkspace, workspace.Monitor, CurrentWorkspace.Monitor);
+			Workspace.DoWorkspaceMonitorChanged(workspace, newWorkspaceMonitor, currentWorkspaceMonitor);
+			Workspace.DoWorkspaceMonitorChanged(CurrentWorkspace, currentWorkspaceMonitor, newWorkspaceMonitor);
 		}
 
 		#endregion
