@@ -1273,6 +1273,7 @@ namespace Windawesome
 								}
 							}
 
+							justDeactivatedWindow = false;
 							CurrentWorkspace.WindowActivated(hWnd);
 						}
 						break;
@@ -1298,7 +1299,6 @@ namespace Windawesome
 					{
 						// Windows is trying to activate a window from another workspace when some on the current one was
 						// destroyed or minimized. Do not allow that but instead reactivate another one from the current workspace
-						justDeactivatedWindow = false;
 						activatedWindow = DoForTopmostWindowForWorkspace(CurrentWorkspace, ActivateWindow);
 					}
 					else
