@@ -483,7 +483,7 @@ namespace Windawesome
 			var node = windows.Find(window);
 			if (node != null)
 			{
-				return node.Next != null ? node.Next.Value : null;
+				return node.Next != null ? node.Next.Value : windows.First.Value;
 			}
 			return null;
 		}
@@ -493,7 +493,7 @@ namespace Windawesome
 			var node = windows.Find(window);
 			if (node != null)
 			{
-				return node.Previous != null ? node.Previous.Value : null;
+				return node.Previous != null ? node.Previous.Value : windows.Last.Value;
 			}
 			return null;
 		}
