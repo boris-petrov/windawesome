@@ -37,7 +37,7 @@ namespace Windawesome
 		public delegate void WindowTitleOrIconChangedEventHandler(Workspace workspace, Window window, string newText, Bitmap newIcon);
 		public static event WindowTitleOrIconChangedEventHandler WindowTitleOrIconChanged;
 
-		public delegate void WindowFlashingEventHandler(LinkedList<Tuple<Workspace, Window>> list);
+		public delegate void WindowFlashingEventHandler(IntPtr hWnd, LinkedList<Tuple<Workspace, Window>> list);
 		public static event WindowFlashingEventHandler WindowFlashing;
 
 		public delegate void ProgramRuleMatchedEventHandler(ProgramRule programRule, IntPtr hWnd, string cName, string dName, string pName, NativeMethods.WS style, NativeMethods.WS_EX exStyle);
@@ -54,11 +54,11 @@ namespace Windawesome
 			}
 		}
 
-		private static void DoWindowFlashing(LinkedList<Tuple<Workspace, Window>> list)
+		private static void DoWindowFlashing(IntPtr hWnd, LinkedList<Tuple<Workspace, Window>> list)
 		{
 			if (WindowFlashing != null)
 			{
-				WindowFlashing(list);
+				WindowFlashing(hWnd, list);
 			}
 		}
 
@@ -1359,10 +1359,8 @@ namespace Windawesome
 						}
 						break;
 					case NativeMethods.ShellEvents.HSHELL_FLASH:
-						if (ApplicationsTryGetValue(m.LParam, out list))
-						{
-							DoWindowFlashing(list);
-						}
+						ApplicationsTryGetValue(m.LParam, out list);
+						DoWindowFlashing(m.LParam, list);
 						break;
 				}
 			}
