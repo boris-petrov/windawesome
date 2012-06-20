@@ -109,18 +109,25 @@ namespace Windawesome
 			SetWorkspaceLabelColor(workspace);
 		}
 
-		private static void OnWindowFlashing(LinkedList<Tuple<Workspace, Window>> list)
+		private static void OnWindowFlashing(IntPtr hWnd, LinkedList<Tuple<Workspace, Window>> list)
 		{
-			var hWnd = list.First.Value.Item2.hWnd;
-			var workspace = list.First.Value.Item1;
-			if (NativeMethods.IsWindow(hWnd) && hWnd != NativeMethods.GetForegroundWindow() &&
-				!flashingWindows.ContainsKey(hWnd))
+			if (list != null)
 			{
-				flashingWindows[hWnd] = workspace;
-				flashingWorkspaces.Add(workspace);
-				if (flashingWorkspaces.Count == 1)
+				if (NativeMethods.IsWindow(hWnd) && !flashingWindows.ContainsKey(hWnd))
 				{
-					flashTimer.Start();
+					var foregroundWindow = NativeMethods.GetForegroundWindow();
+
+					if (Utilities.DoForSelfAndOwnersWhile(foregroundWindow, h => h != hWnd) == IntPtr.Zero)
+					{
+						var workspace = list.First.Value.Item1;
+
+						flashingWindows[hWnd] = workspace;
+						flashingWorkspaces.Add(workspace);
+						if (flashingWorkspaces.Count == 1)
+						{
+							flashTimer.Start();
+						}
+					}
 				}
 			}
 		}
