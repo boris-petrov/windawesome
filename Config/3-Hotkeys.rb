@@ -15,7 +15,7 @@ def get_current_workspace_managed_window
 	window
 end
 
-Windawesome::Windawesome.window_flashing { |l| flashing_window = l.first.value.item2.hWnd }
+Windawesome::Windawesome.window_flashing { |hWnd, l| flashing_window = hWnd }
 
 Windawesome::Workspace.workspace_deactivated { |ws| previous_workspace = ws }
 
