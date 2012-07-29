@@ -1,7 +1,7 @@
 from System.Drawing import Color, Font
 from System.Linq import Enumerable
 from Windawesome import ILayout, TileLayout, FullScreenLayout, FloatingLayout, IPlugin, Workspace
-from Windawesome import Bar, LayoutWidget, WorkspacesWidget, ApplicationTabsWidget, SystemTrayWidget, CpuMonitorWidget, RamMonitorWidget, LaptopBatteryMonitorWidget, LanguageBarWidget, SeparatorWidget
+from Windawesome import Bar, LayoutWidget, WorkspacesWidget, ApplicationTabsWidget, SystemTrayWidget, CpuMonitorWidget, RamMonitorWidget, LaptopBatteryMonitorWidget, LanguageBarWidget, CurrentlyPlayingWidget, SeparatorWidget
 from Windawesome import LoggerPlugin, ShortcutsManager, InputLanguageChangerPlugin
 from Windawesome.NativeMethods import MOD
 from System import Tuple
