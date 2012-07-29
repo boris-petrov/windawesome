@@ -1273,9 +1273,10 @@ namespace Windawesome
 								}
 							}
 
-							justDeactivatedWindow = false;
 							CurrentWorkspace.WindowActivated(hWnd);
 						}
+
+						justDeactivatedWindow = false;
 						break;
 				}
 			}
