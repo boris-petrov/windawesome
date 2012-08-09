@@ -32,6 +32,8 @@ namespace Windawesome
 		private readonly IntPtr windowMinimizedOrRestoredWinEventHook;
 		private readonly IntPtr windowFocusedWinEventHook;
 
+		private IntPtr currentActiveWindow;
+
 		#region Events
 
 		public delegate void WindowTitleOrIconChangedEventHandler(Workspace workspace, Window window, string newText, Bitmap newIcon);
@@ -152,6 +154,8 @@ namespace Windawesome
 
 			// register a shell hook
 			NativeMethods.RegisterShellHookWindow(this.Handle);
+
+			currentActiveWindow = NativeMethods.GetForegroundWindow();
 
 			// register some shell events
 			winEventDelegate = WinEventDelegate;
@@ -1228,6 +1232,10 @@ namespace Windawesome
 							UnmanageWindow(list);
 							hiddenApplications.RemoveAll(hWnd);
 						}
+						else if (currentActiveWindow == hWnd)
+						{
+							WaitAndActivateNextTopmost(currentActiveWindow);
+						}
 						break;
 					// this is needed as some windows like Outlook 2010 splash screen
 					// do not send an HSHELL_WINDOWDESTROYED
@@ -1237,14 +1245,24 @@ namespace Windawesome
 						{
 							UnmanageWindow(list);
 						}
+						else if (currentActiveWindow == hWnd)
+						{
+							WaitAndActivateNextTopmost(currentActiveWindow);
+						}
 						break;
 					// these actually work (in contrast with HSHELL_GETMINRECT)
 					case NativeMethods.EVENT.EVENT_SYSTEM_MINIMIZESTART:
 						CurrentWorkspace.WindowMinimized(hWnd);
-						WaitAndActivateNextTopmost(hWnd);
+						if (currentActiveWindow == hWnd)
+						{
+							WaitAndActivateNextTopmost(currentActiveWindow);
+						}
 						break;
 					case NativeMethods.EVENT.EVENT_SYSTEM_MINIMIZEEND:
 						CurrentWorkspace.WindowRestored(hWnd);
+
+						currentActiveWindow   = hWnd;
+						justDeactivatedWindow = false;
 						break;
 					// HSHELL_WINDOWACTIVATED/HSHELL_RUDEAPPACTIVATED doesn't work for some windows like Digsby Buddy List
 					// EVENT_OBJECT_FOCUS doesn't work with Firefox on the other hand
@@ -1276,6 +1294,7 @@ namespace Windawesome
 							CurrentWorkspace.WindowActivated(hWnd);
 						}
 
+						currentActiveWindow   = hWnd;
 						justDeactivatedWindow = false;
 						break;
 				}
