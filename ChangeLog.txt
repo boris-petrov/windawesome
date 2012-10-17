@@ -1,0 +1,349 @@
+VERSION 1.4.1
+
+	- Fixed switching of applications across monitors
+	- Changed window flashing API (fix your config files)
+	- Added NetworkMonitorWidget (thanks to weiwen)
+
+VERSION 1.4.0
+
+	- Added a SeparatorWidget.
+	- Implemented some xmonad-like functionality for multiple-monitors -
+	  see SwapCurrentWorkspaceWith, SwitchToNextMonitor and
+	  SwitchToPreviousMonitor. Thanks to mkocubinski for the idea and
+	  some of the implementation.
+	- Implemented AddBarToWorkspace and RemoveBarFromWorkspace.
+	- Small performance improvements.
+
+VERSION 1.3.2
+
+	- Fixed some annoying bugs when using multiple monitors.
+	- Fixed an issue when restoring a minimized window.
+	- Added InputLanguageChangerPlugin - see the usage file for information.
+	- Added RamMonitorWidget (thanks to vOSHoHpC for the code) -
+	  see the usage file for information
+
+VERSION 1.3.1
+
+	Some performance improvements for Windows Vista+ users.
+	Any issues/recommendations/requests for future versions?
+
+VERSION 1.3.0
+
+	Bug fixes and performance improvements. Most importantly:
+
+	- Fixed the LanguageBarWidget which didn't work under XP
+	  (thanks to daedric for the bug-report)
+	- Windawesome will set itself to have a High priority.
+	  This should make it much more responsive
+	  (if you hadn't done that already)
+
+VERSION 1.2.6
+
+	Some small fixes, mainly connected with Windows 7, where strange things
+	happen if you use a slideshow for the desktop background image. There is
+	a slight change in the config files - UniqueHotkey is not used anymore
+	so you should remove it.
+
+VERSION 1.2.5
+
+	Bug-fix release. Small performance improvements too. The only visible change
+	would be the fact that the config option "updateIcon" is now "false" by
+	default - i.e. you have to explicitly tell which windows you would like to
+	update their icons in the Application Tabs Widget (the only such one I
+	personally use is the Windows Explorer).
+
+VERSION 1.2.4
+
+	Again minor fixes here and there. A couple of notable changes:
+
+	- I think I've finally got the hang of owned windows. Everything
+	  should work as expected... I hope. :)
+	- I've added an auto update feature. That is, it only checks for
+	  new versions and will tell you if there is one. It checks an XML
+	  file for the latest version which is hosted in Dropbox.
+	- I've refactored some helper functions to a different class which means
+	  that shortcuts need to be updated. Take a look at my config files to
+	  see what you must change.
+
+VERSION 1.2.3
+
+	This version contains small fixes and performance improvements.
+	Notable changes:
+
+	- I've added a new tip in the documentation which is about setting
+	  the Windawesome process to be at the highest possible priority
+	  (which should make it a bit faster and not swap it to disk all the time).
+	  I noticed that Windawesome ran at "Below Normal" priority when it was
+	  started by the Task Scheduler at logon.
+	- Windawesome should be able to correctly handle Windows shutting down,
+	  i.e. you don't have to quit it in order to shut down the machine.
+
+VERSION 1.2.2
+
+	Yet more fixes for topmost-window handling and window activation
+	(this proved to be more error-prone and more difficult to implement
+	efficiently than expected). Added the
+	onWindowCreatedOnInactiveWorkspaceAction ProgramRule and renamed a
+	bunch of others so you should fix your custom configs.
+
+VERSION 1.2.1
+
+	I've fixed some problems and improved some things connected with finding the
+	topmost window and window activation. Be sure to read the changes from the
+	previous version too.
+
+VERSION 1.2.0
+
+	A lot of changes are incorporated in this release. There are many changes to
+	the config files too, so update yours as necessary. Most notable changes:
+
+	- Removed lots of code which countered Windows' sporadic activation of windows
+	  and therefore disrupting the Z-order I have made. This will mostly show up
+	  on multiple-monitor solutions and only if you use ALT-TAB. For that reason,
+	  now you should mostly use ALT-J/ALT-K - it's more convenient anyway. :)
+	- Added updateIcon to ProgramRules.
+	  Read the usage file to find out what it does.
+	- Many small changes that should improve general stability and speed.
+
+
+VERSION 1.1.3
+
+	Fixed a value which caused a crash for the x86 version.
+	This is an important change for x64 too.
+
+VERSION 1.1.2
+
+	Fixed some problems which arose from the changes in the previous version,
+	particularly with owned-window management.
+
+VERSION 1.1.1
+
+	This version contains mainly small bug fixes.
+
+VERSION 1.1.0
+
+	- Added the LanguageBarWidget, which is pretty useless if you use only one
+	  input language in your Windows, but everybody else might like it.
+	- Fixed some hangings because of functions which are not supposed to hang,
+	  at least according to Microsoft.
+	- Changed a bit the code which activates applications... hopefully there will
+	  be MUCH (like 90+%) less blinking windows.
+	- Sometimes window activation wasn't being registered.
+	  That should be fixed now.
+
+VERSION 1.0.20
+
+	This version contains some bug fixes, as well as a couple of new features:
+	- Added better handling of owned windows. Basic idea is that whenever a
+	  window is managed by Windawesome, its owned will be hidden/shown with it.
+	  See MSDN if you are unsure what an owned window is and the usage.txt for a
+	  little bit more info.
+	- Added another window "order" apart from the Z order. It is the same as the
+	  tab-order which the ApplicationTabsWidget shows. The default hotkeys for
+	  moving through windows are ALT J/K and for moving the windows to different
+	  positions in the order are SHIFT ALT J/K. Note that Z-order is still used
+	  when showing windows on changing workspaces, however I am doing horrible
+	  hacks for that, as I have to counter Windows' sporadic behavior of
+	  activating windows randomly. Therefore, I am thinking of removing that in
+	  the future. Shout if you think it's a bad idea. :)
+	- A lot of changes to the config files so take a look.
+
+VERSION 1.0.19
+
+	This version contains only bug fixes.
+
+VERSION 1.0.18
+
+	This version contains many bug fixes and improvements.
+	Notable additions:
+
+	- hideFromAltTabAndTaskbarWhenOnInactiveWorkspace option for the Rule class.
+	- Added a LaptopBatteryMonitorWidget.
+
+Be sure to merge the new config files with yours as there are important changes.
+
+VERSION 1.0.17
+
+	This version is the first to support multiple monitors.
+	The main ideas:
+
+	- Every monitor should have at least one workspace at all times.
+	- Bars are per-monitor. Workspaces can have different bars on
+	  different monitors. When you create a Workspace with a list of Bars,
+	  each will be displayed only on its corresponding monitor (e.g. Bars 1
+	  and 2 are on monitor A and Bar 3 is on monitor B, then if you construct
+	  a workspace with the list (3, 1) for Bars, then bar 1 will be displayed
+	  when the workspace is on monitor A, and bar 3 will be displayed when
+	  the workspace is on monitor B).
+	- The default config files do not include the ability to move workspaces
+	  around monitors. You can use the function MoveWorkspaceToMonitor
+	  in Windawesome for that.
+	- In this version you should make sure you do not have a window on two or
+	  more workspaces which are visible on two or more monitors at the same time.
+
+Various other fixes included in the release. There are many changes to the config files so make sure you update yours as needed.
+
+
+VERSION 1.0.16
+
+	This is a bug-fix release mainly. Notable changes are:
+
+	- Widgets can now refresh when RefreshWindawesome is called
+	  (ALT - SHIFT - "R" by default) - this is mainly for the
+	  System Tray Widget which sometimes doesn't work properly.
+	- Added the ability to remove menu bars from windows. You have to
+	  make your own shortcut for toggling the menu (use the
+	  ToggleShowHideWindowMenu function) or use the ProgramRule to
+	  specify whether to initially show the menu or not. Note that this
+	  doesn't work for a lot of applications actually as they don't use
+	  Windows' concept for menus.
+	- Some changes in the APIs and naming - make sure to update your
+	  config files as needed.
+
+VERSION 1.0.15
+
+	Huge number of improvements that should fix a host of problems.
+	Note the change, again, in the API for creating Workspaces -
+	make sure to update your config files as needed.
+
+VERSION 1.0.14
+
+	Added the customMatchingFunction option for the ProgramRules.
+
+	Made the LoggerPlugin output more information on program rule
+	matching so if you have problems with windows (not) being managed,
+	try using that.
+
+	Windows are now shown synchronously, which could cause delays if
+	there is a hung window, but otherwise should work faster, better,
+	preserve the Z-order correctly and reduce flickering immensely.
+
+	Various fixes here and there.
+
+VERSION 1.0.13
+
+	Added hideOwnedPopups, redrawDesktopOnWindowCreated, tryAgainAfter,
+	showOnWorkspacesCount, onHiddenWindowShownAction and onWindowCreatedAction
+	to the rules. Read the USAGE file for explanation.
+
+	Various fixes and improvements.
+
+VERSION 1.0.12
+
+	Added a couple of options for the ProgramRule and Rule
+	(processName, activateLastActivePopup) - read in the Usage
+	file what exactly are they for.
+
+	One more go at the problem with the resetting of the Windows
+	working area when certain things happen. Now, theoretically,
+	when Remote Desktoping to a machine, Windawesome should handle
+	the change fine. However, Windows is inconsistent in sending
+	messages so expect bad behavior sometimes.
+
+	I've added a couple of useful hotkeys - you might want to
+	take a look at those.
+
+	Note the change in the API for the creation of the Workspaces so
+	if you have custom config files make sure you update them properly.
+
+VERSION 1.0.11
+
+	Windawesome should no longer have a problem when another program
+	is docked to the end of the screen or when the resolution of the
+	monitor is changed, i.e. Windawesome should re-size the bars and
+	widgets and should reposition all windows. Note, however, that
+	both at the same time do not work - read the "Known bugs/limitations"
+	in Usage.txt for more information.
+
+VERSION 1.0.10
+
+	Fixed some small issues. Minor improvements in a bunch of places.
+
+	Note the changes in the config files since the last version -
+	if you have custom configurations, there will be things to fix.
+
+	Take a look at the tips section in Usage.txt - I've added a way to
+	stop Windows from focusing a program's menu when you press Alt,
+	which is extremely helpful if you use Alt + number to switch
+	between workspaces as I do.
+
+VERSION 1.0.9
+
+	Fixed a couple of small bugs that could cause a crash in
+	Windawesome.
+
+	Other minor improvements.
+
+VERSION 1.0.8
+
+	This version only contains a new version of the System Tray
+	widget which was revised to work like before - it seems
+	that this is the only way I can make it work all the time.
+
+VERSION 1.0.7
+
+	Fixed a small bug that sometimes caused windows to
+	disappear on startup.
+
+	Changed the way Windawesome activates windows, when
+	switching workspaces for example. It should now work better,
+	faster and it won't hung the WM when there is a hung application.
+	Note the new option (uniqueHotkey). Now, even more than before,
+	it is best to run Windawesome elevated. Take a look at the
+	tips section in the Usage.txt readme to see how to do that
+	without the UIC prompt.
+
+VERSION 1.0.6
+
+	Added a new (handleOwnedWindows) option in the
+	ProgramRules which allows Windawesome to handle owned
+	windows. This should fix all problems with applications
+	written in VCL.
+
+VERSION 1.0.5
+
+	Since last version, Windawesome is compiled with
+	VS 2010 SP1's compilers.
+
+	Upgraded the IronPython/IronRuby DLLs and their usage
+	to the newest versions. This gives a HUGE performance
+	boost in start up time over the previous version.
+
+	Windawesome should now recognize windows written with
+	the VCL framework better.
+
+	Minor bug fixes and improvements in lots of places.
+
+VERSION 1.0.4
+
+	Now uses asynchronous show/hide functions in most places
+	which should help when a window is hung.
+
+	Added new options to redraw a window when shown and to
+	reposition the windows in a workspace when switched to.
+
+	Modified the System Tray Widget to work a bit differently
+	(better). Hopefully there won't be problems.
+
+	Improved the way icons are got from applications.
+	Should not block the UI.
+
+VERSION 1.0.3
+
+	Exported the keyboard hook as a plugin. It should now work
+	better and not crash at all. Read the Usage.txt for details.
+
+	In Vista now the start menu button should hide.
+
+VERSION 1.0.2
+
+	Fixed a couple of small issues and made some improvements.
+
+VERSION 1.0.1
+
+	Added styles to the program rules. Reordered the way icons
+	are being found for applications.
+
+VERSION 1.0.0
+
+	Initial release
