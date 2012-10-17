@@ -1,0 +1,7 @@
+THANKS TO:
+
+weiwen - network monitor widget implementation
+mkocubinski - xmonad-like functionality for multiple monitors
+vOSHoHpC - RAM monitor widget implementation
+daedric - reported a language bar widget bug
+joankaradimov - system tray widget refactoring and IronPython/IronRuby integration
