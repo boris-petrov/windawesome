@@ -1,0 +1,13 @@
+lib/IronPython.Modules.dll
+lib/IronPython.dll
+lib/IronRuby.Libraries.dll
+lib/IronRuby.dll
+lib/Microsoft.Dynamic.dll
+lib/Microsoft.Scripting.dll
+bin/x64
+ShortcutsManager/obj
+TileLayout/obj
+Windawesome/obj
+WindowSubclassingCSharp/obj
+Windawesome.opensdf
+Windawesome.sdf
