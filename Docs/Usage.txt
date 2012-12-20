@@ -8,7 +8,7 @@ Windawesome (pronounced - contrary to what you would expect from the way it is w
 ====================================================================
 
 Installation:
-You can build from sources, which would require at least Visual Studio 2010 (C# and C++ Express work) and the IronPython/IronRuby DLLs (see next sentence). If you don't want, you could just use the binaries I have built, but you still need .NET 4 Client Profile, VC++ 2010 redist and the IronPython/IronRuby DLLs (IronPython.dll, IronPython.Modules.dll, IronRuby.dll, IronRuby.Libraries.dll, Microsoft.Dynamic.dll, Microsoft.Scripting.dll). All the configuration that comes with Windawesome is the one that I use on my machine - you probably won't like it so make sure to go through all config files and customize as you like.
+You can build from sources, which would require at least Visual Studio 2010 (C# and C++ Express work with Visual Studio 2012) and the IronPython/IronRuby DLLs (see next sentence). If you don't want, you could just use the binaries I have built, but you still need .NET 4 Client Profile, VC++ 2010 redist and the IronPython/IronRuby DLLs (IronPython.dll, IronPython.Modules.dll, IronRuby.dll, IronRuby.Libraries.dll, Microsoft.Dynamic.dll, Microsoft.Scripting.dll). All the configuration that comes with Windawesome is the one that I use on my machine - you probably won't like it so make sure to go through all config files and customize as you like.
 
 ====================================================================
 
