@@ -6,7 +6,7 @@ namespace Windawesome
 	public class InputLanguageChangerPlugin : IPlugin
 	{
 		private readonly HashSet<string> classNamesSet;
-		private readonly Dictionary<IntPtr, IntPtr> inputLanguages; 
+		private readonly Dictionary<IntPtr, IntPtr> inputLanguages;
 		private IntPtr currentForeground;
 
 		public InputLanguageChangerPlugin(IEnumerable<string> windowClassNames)

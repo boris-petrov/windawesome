@@ -194,7 +194,7 @@ subscribe modifiers.Control | modifiers.Alt | modifiers.Shift, key.S do
 end
 
 subscribe modifiers.Alt | modifiers.Shift, key.Left do
-	windawesome.current_workspace.layout.add_to_master_area_factor -0.05 if windawesome.current_workspace.layout.layout_name == "Tile"
+	windawesome.current_workspace.layout.add_to_master_area_factor(-0.05) if windawesome.current_workspace.layout.layout_name == "Tile"
 end
 
 subscribe modifiers.Alt | modifiers.Shift, key.Right do

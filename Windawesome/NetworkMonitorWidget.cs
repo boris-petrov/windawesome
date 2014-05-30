@@ -8,117 +8,117 @@ namespace Windawesome
 {
 	public sealed class NetworkMonitorWidget : IFixedWidthWidget
 	{
-	private Bar bar;
+		private Bar bar;
 
-	private Label label;
-	private bool isLeft;
-	private readonly Timer updateTimer;
-	private readonly Color backgroundColor;
-	private readonly Color foregroundColor;
-	private long oldReceived;
-	private long oldSent;
-	private NetworkInterface networkInterface;
-	private int updateDuration;
+		private Label label;
+		private bool isLeft;
+		private readonly Timer updateTimer;
+		private readonly Color backgroundColor;
+		private readonly Color foregroundColor;
+		private long oldReceived;
+		private long oldSent;
+		private NetworkInterface networkInterface;
+		private int updateDuration;
 
-	public NetworkMonitorWidget(int interfaceId = 0, int updateTime = 1000,
-		Color? backgroundColor = null, Color? foregroundColor = null)
-	{
-		this.backgroundColor = backgroundColor ?? Color.White;
-		this.foregroundColor = foregroundColor ?? Color.Black;
-
-        if (!NetworkInterface.GetIsNetworkAvailable())
-        {
-            return;
-        }
-
-		updateDuration = updateTime;
-		updateTimer = new Timer { Interval = updateTime };
-		updateTimer.Tick += OnTimerTick;
-
-		networkInterface = NetworkInterface.GetAllNetworkInterfaces()[interfaceId];
-		oldReceived = networkInterface.GetIPv4Statistics().BytesReceived;
-		oldSent = networkInterface.GetIPv4Statistics().BytesSent;
-	}
-
-	private void OnTimerTick(object sender, EventArgs e)
-	{
-		var oldLeft = label.Left;
-		var oldRight = label.Right;
-
-		var curReceived = networkInterface.GetIPv4Statistics().BytesReceived;
-		var downSpeed = ((float) (curReceived - oldReceived)) / updateDuration * 1000 / 1024;
-		var curSent = networkInterface.GetIPv4Statistics().BytesSent;
-		var upSpeed = ((float) (curSent - oldSent)) / updateDuration * 1000 / 1024;
-
-		var oldWidth = label.Width;
-		label.Text = string.Format("\u2193{0}{1} \u2191{2}{3}", ((downSpeed > 999) ? downSpeed / 1024 : downSpeed).ToString("0.0"),
-            ((downSpeed > 999) ? "M" : "k"), ((upSpeed > 999) ? upSpeed / 1024 : upSpeed).ToString("0.0"), ((upSpeed > 999) ? "M" : "k"));
-		var newWidth = TextRenderer.MeasureText(label.Text, label.Font).Width;
-		label.Width = newWidth;
-
-		if (oldWidth != newWidth)
+		public NetworkMonitorWidget(int interfaceId = 0, int updateTime = 1000,
+			Color? backgroundColor = null, Color? foregroundColor = null)
 		{
-		    this.RepositionControls(oldLeft, oldRight);
-	        bar.DoFixedWidthWidgetWidthChanged(this);
+			this.backgroundColor = backgroundColor ?? Color.White;
+			this.foregroundColor = foregroundColor ?? Color.Black;
+
+			if (!NetworkInterface.GetIsNetworkAvailable())
+			{
+				return;
+			}
+
+			updateDuration = updateTime;
+			updateTimer = new Timer { Interval = updateTime };
+			updateTimer.Tick += OnTimerTick;
+
+			networkInterface = NetworkInterface.GetAllNetworkInterfaces()[interfaceId];
+			oldReceived = networkInterface.GetIPv4Statistics().BytesReceived;
+			oldSent = networkInterface.GetIPv4Statistics().BytesSent;
 		}
 
-		oldSent = curSent;
-		oldReceived = curReceived;
-	}
+		private void OnTimerTick(object sender, EventArgs e)
+		{
+			var oldLeft = label.Left;
+			var oldRight = label.Right;
 
-	#region IWidget Members
+			var curReceived = networkInterface.GetIPv4Statistics().BytesReceived;
+			var downSpeed = ((float) (curReceived - oldReceived)) / updateDuration * 1000 / 1024;
+			var curSent = networkInterface.GetIPv4Statistics().BytesSent;
+			var upSpeed = ((float) (curSent - oldSent)) / updateDuration * 1000 / 1024;
 
-	void IWidget.StaticInitializeWidget(Windawesome windawesome)
-	{
-	}
+			var oldWidth = label.Width;
+			label.Text = string.Format("\u2193{0}{1} \u2191{2}{3}", ((downSpeed > 999) ? downSpeed / 1024 : downSpeed).ToString("0.0"),
+				((downSpeed > 999) ? "M" : "k"), ((upSpeed > 999) ? upSpeed / 1024 : upSpeed).ToString("0.0"), ((upSpeed > 999) ? "M" : "k"));
+			var newWidth = TextRenderer.MeasureText(label.Text, label.Font).Width;
+			label.Width = newWidth;
 
-	void IWidget.InitializeWidget(Bar bar)
-	{
-		this.bar = bar;
+			if (oldWidth != newWidth)
+			{
+				this.RepositionControls(oldLeft, oldRight);
+				bar.DoFixedWidthWidgetWidthChanged(this);
+			}
 
-		label = bar.CreateLabel("", 0);
-		label.BackColor = backgroundColor;
-		label.ForeColor = foregroundColor;
-		label.TextAlign = ContentAlignment.MiddleCenter;
+			oldSent = curSent;
+			oldReceived = curReceived;
+		}
 
-		bar.BarShown += () => updateTimer.Start();
-		bar.BarHidden += () => updateTimer.Stop();
-	}
+		#region IWidget Members
 
-	IEnumerable<Control> IFixedWidthWidget.GetInitialControls(bool isLeft)
-	{
-		this.isLeft = isLeft;
+		void IWidget.StaticInitializeWidget(Windawesome windawesome)
+		{
+		}
 
-		return new[] { label };
-	}
+		void IWidget.InitializeWidget(Bar bar)
+		{
+			this.bar = bar;
 
-	public void RepositionControls(int left, int right)
-	{
-		this.label.Location = this.isLeft ? new Point(left, 0) : new Point(right - this.label.Width, 0);
-	}
+			label = bar.CreateLabel("", 0);
+			label.BackColor = backgroundColor;
+			label.ForeColor = foregroundColor;
+			label.TextAlign = ContentAlignment.MiddleCenter;
 
-	int IWidget.GetLeft()
-	{
-		return label.Left;
-	}
+			bar.BarShown += () => updateTimer.Start();
+			bar.BarHidden += () => updateTimer.Stop();
+		}
 
-	int IWidget.GetRight()
-	{
-		return label.Right;
-	}
+		IEnumerable<Control> IFixedWidthWidget.GetInitialControls(bool isLeft)
+		{
+			this.isLeft = isLeft;
 
-	void IWidget.StaticDispose()
-	{
-	}
+			return new[] { label };
+		}
 
-	void IWidget.Dispose()
-	{
-	}
+		public void RepositionControls(int left, int right)
+		{
+			this.label.Location = this.isLeft ? new Point(left, 0) : new Point(right - this.label.Width, 0);
+		}
 
-	void IWidget.Refresh()
-	{
-	}
+		int IWidget.GetLeft()
+		{
+			return label.Left;
+		}
 
-	#endregion
+		int IWidget.GetRight()
+		{
+			return label.Right;
+		}
+
+		void IWidget.StaticDispose()
+		{
+		}
+
+		void IWidget.Dispose()
+		{
+		}
+
+		void IWidget.Refresh()
+		{
+		}
+
+		#endregion
 	}
 }

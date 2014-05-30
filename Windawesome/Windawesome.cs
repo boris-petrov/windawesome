@@ -117,7 +117,7 @@ namespace Windawesome
 			// add all windows to their respective workspaces
 			NativeMethods.EnumWindows((hWnd, _) => (Utilities.IsAppWindow(hWnd) && AddWindowToWorkspace(hWnd, finishedInitializing: false)) || true, IntPtr.Zero);
 
-			// add a handler for when the working area or screen rosolution changes as well as
+			// add a handler for when the working area or screen resolution changes as well as
 			// a handler for the system shutting down/restarting
 			SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
 			SystemEvents.DisplaySettingsChanged += OnDisplaySettingsChanged;
@@ -225,7 +225,7 @@ namespace Windawesome
 			if (Screen.AllScreens.Length != monitors.Length)
 			{
 				// new monitor has been attached or an old one removed
-				
+
 				this.Quit();
 			}
 			else
