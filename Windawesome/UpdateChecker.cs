@@ -9,7 +9,7 @@ namespace Windawesome
 	{
 		public static void CheckForUpdate()
 		{
-			const string xmlUrl = "https://dl.dropboxusercontent.com/u/52551418/app_version.xml";
+			const string xmlUrl = "https://raw.githubusercontent.com/boris-petrov/windawesome/master/app_version.xml";
 
 			Task.Factory.StartNew(() =>
 				{
